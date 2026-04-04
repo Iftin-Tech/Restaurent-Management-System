@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="px-8 py-8 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+         {% if request.tenant %}style="border-top: 4px solid {{ request.tenant.primary_color }};"{% endif %}>
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Staff Management</h1>
+            <p class="text-gray-500 font-medium mt-1">Configure user accounts and access roles for your restaurant.</p>
+        </div>
+        
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'accounts:user_create' %}" class="inline-flex items-center text-white px-6 py-3 rounded-lg font-bold shadow-md transition transform hover:-translate-y-0.5"
+               {% if request.tenant %}style="background-color: {{ request.tenant.primary_color }};"{% else %}class="bg-blue-600"{% endif %}>
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                Add New Staff
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 overflow-hidden">
+        <table id="usersTable" class="w-full text-left datatable-premium">
+            <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-xs font-black text-gray-400 uppercase tracking-widest">
+                    <th class="p-4 rounded-tl-lg">Employee Name</th>
+                    <th class="p-4">Contact Profile</th>
+                    <th class="p-4">Authorization</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4">Last Login</th>
+                    <th class="p-4 text-right rounded-tr-lg border-none shadow-none">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for u in users %}
+                <tr class="hover:bg-indigo-50/30 transition group">
+                    <td class="p-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-xl shadow-opacity-20 mr-4"
+                                 {% if request.tenant %}style="background-color: {{ request.tenant.primary_color }};"{% else %}class="bg-indigo-600"{% endif %}>
+                                {{ u.full_name.0|default:u.username.0|upper }}
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-black text-slate-900 text-base">{{ u.full_name|default:u.username }}</span>
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">ID: #{{ u.id|add:1000 }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-bold text-slate-700">{{ u.email|default:"No direct email" }}</span>
+                            <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest mt-1">{{ u.phone_number|default:"No contact linked" }}</span>
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex flex-wrap gap-1">
+                            {% for ur in u.roles.all %}
+                                <span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-black uppercase tracking-widest border border-gray-200">
+                                    {{ ur.role.name }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        {% if u.is_active %}
+                        <span class="bg-green-100 text-green-700 font-bold text-[10px] uppercase tracking-wider px-2 py-1 rounded-full border border-green-200">Active</span>
+                        {% else %}
+                        <span class="bg-red-100 text-red-700 font-bold text-[10px] uppercase tracking-wider px-2 py-1 rounded-full border border-red-200">Disabled</span>
+                        {% endif %}
+                    </td>
+                    <td class="p-4 text-xs font-medium text-gray-500">{{ u.last_login|date:"M d, P"|default:"Never" }}</td>
+                    <td class="p-4 text-right">
+                         <a href="#" class="text-sm font-bold text-gray-400 hover:text-gray-900 px-3 py-1.5 rounded-lg transition">Manage Access</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#usersTable').DataTable({
+        responsive: true,
+        pageLength: 10,
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Find staff by name or email..."
+        },
+        dom: '<"flex justify-between items-center mb-6"<"relative"f>>rt<"flex justify-between items-center mt-6 text-sm font-medium"ip>',
+    });
+    
+    // Minimal white-label tailoring for standard search
+    $('.dataTables_filter input').addClass('w-80 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border pl-3 text-sm');
+});
+</script>
+{% endblock %}

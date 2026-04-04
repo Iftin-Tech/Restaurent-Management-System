@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="px-8 py-8 max-w-7xl mx-auto">
+    <div class="mb-10 text-center lg:text-left">
+        <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Platform Command Center</h1>
+        <p class="text-gray-500 mt-2 font-medium text-lg">Central dashboard for SaaS management and oversight.</p>
+    </div>
+
+    <!-- Manager Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div class="bg-gradient-to-br from-indigo-50 to-white px-8 py-6 rounded-2xl shadow-sm border border-indigo-100 hover:shadow-md transition">
+            <h3 class="text-indigo-800 text-xs font-black uppercase tracking-widest mb-3">Total Registered Clients</h3>
+            <p class="text-5xl font-black text-indigo-600">{{ total_restaurants }} <span class="text-sm font-semibold text-indigo-400">restaurants</span></p>
+        </div>
+        <div class="bg-gradient-to-br from-green-50 to-white px-8 py-6 rounded-2xl shadow-sm border border-green-100 hover:shadow-md transition">
+            <h3 class="text-green-800 text-xs font-black uppercase tracking-widest mb-3">Active (Live)</h3>
+            <p class="text-5xl font-black text-green-500">{{ active_restaurants }} <span class="text-sm font-semibold text-green-400">instances</span></p>
+        </div>
+        <div class="bg-gradient-to-br from-red-50 to-white px-8 py-6 rounded-2xl shadow-sm border border-red-100 hover:shadow-md transition">
+            <h3 class="text-red-800 text-xs font-black uppercase tracking-widest mb-3">Inactive / Suspended</h3>
+            <p class="text-5xl font-black text-red-500">{{ inactive_restaurants }} <span class="text-sm font-semibold text-red-400">instances</span></p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-8 py-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+            <h3 class="text-lg font-black text-gray-800">Recently Onboarded</h3>
+            <a href="{% url 'platform_admin:restaurant_list' %}" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 transition">View All &rarr;</a>
+        </div>
+        <div class="p-0">
+            <ul class="divide-y divide-gray-100">
+                {% for rest in recent_restaurants %}
+                <li class="px-8 py-4 hover:bg-gray-50 transition flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-gray-800 text-lg">{{ rest.name }}</p>
+                        <p class="text-xs font-mono text-gray-500 mt-1">Tenant Subdomain: <span class="text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded">{{ rest.subdomain }}</span></p>
+                    </div>
+                    {% if rest.is_active %}
+                    <span class="bg-green-100 text-green-700 font-bold text-xs uppercase tracking-wide px-3 py-1 rounded-full border border-green-200 shadow-sm">Active</span>
+                    {% else %}
+                    <span class="bg-red-100 text-red-700 font-bold text-xs uppercase tracking-wide px-3 py-1 rounded-full border border-red-200 shadow-sm">Inactive</span>
+                    {% endif %}
+                </li>
+                {% empty %}
+                <li class="px-8 py-8 text-center text-gray-400 font-medium">No clients registered yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

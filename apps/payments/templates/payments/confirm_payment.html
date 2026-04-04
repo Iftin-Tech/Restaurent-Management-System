@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl mt-12 border-t-[10px] border-green-500">
+    <div class="text-center mb-6">
+        <h2 class="text-3xl font-extrabold text-gray-800">Confirm Payment</h2>
+        <p class="text-gray-500 mt-1 flex items-center justify-center gap-1">Receipt <span class="font-mono text-gray-800 bg-gray-100 px-2 py-0.5 rounded font-bold">{{ order.receipt_number }}</span></p>
+    </div>
+    
+    <div class="bg-gray-50 p-5 rounded-lg mb-6 border border-gray-100 shadow-inner">
+        <div class="flex justify-between items-center mb-3">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Order Details</span>
+        </div>
+        <div class="space-y-2 mb-4">
+            {% for item in order.items.all %}
+            <div class="flex justify-between text-sm py-1 border-b border-gray-100 last:border-0 text-gray-700 font-medium">
+                <span>{{ item.quantity }}x {{ item.menu_item.name }}</span>
+                <span class="text-gray-900">${{ item.subtotal }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
+            <span class="text-lg font-bold text-gray-700">Total Due</span>
+            <span class="text-3xl font-extrabold text-green-600">${{ order.total_amount }}</span>
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="space-y-5">
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Payment Method (Cash, eDahab, Zaad, Card)</label>
+                {{ form.method }}
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Amount Paid (confirm actual receipt)</label>
+                {{ form.amount_paid }}
+            </div>
+        </div>
+        
+        <div class="mt-8 flex gap-3">
+            <a href="{% url 'payments:unpaid_orders' %}" class="w-1/3 bg-white border border-gray-300 text-gray-700 text-center py-3.5 rounded-lg hover:bg-gray-50 font-bold transition flex items-center justify-center shadow-sm">Back</a>
+            <button type="submit" class="w-2/3 bg-green-500 text-white py-3.5 rounded-lg hover:bg-green-600 font-bold text-lg shadow-md flex justify-center items-center transition transform active:scale-95">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                Confirm Payment
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

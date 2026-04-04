@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="px-6 py-6 max-w-7xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-gray-800">Hi, {{ request.user.first_name|default:request.user.username }}! 👋</h1>
+        <p class="text-gray-500 mt-1 font-medium">Here is your daily overview.</p>
+    </div>
+
+    {% if 'manager' in roles or request.user.is_superuser %}
+    <!-- Manager Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-green-500">
+            <h3 class="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Today's Sales</h3>
+            <p class="text-4xl font-extrabold text-gray-800">${{ today_sales }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-yellow-400">
+            <h3 class="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Pending Payments</h3>
+            <p class="text-4xl font-extrabold text-gray-800">${{ pending_payments }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-blue-500 flex flex-col justify-between">
+            <h3 class="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Paid Orders</h3>
+            <p class="text-4xl font-extrabold text-gray-800">{{ paid_count }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-red-500 flex flex-col justify-between">
+            <h3 class="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Cancelled</h3>
+            <p class="text-4xl font-extrabold text-gray-800">{{ cancelled_count }}</p>
+        </div>
+    </div>
+
+    {% elif 'cashier' in roles %}
+    <!-- Cashier Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-yellow-50 to-white p-8 rounded-2xl shadow-sm border border-yellow-200">
+            <h3 class="text-yellow-800 text-sm font-bold uppercase tracking-widest mb-4 flex justify-between items-center">
+                <span>Unpaid Billed Orders</span>
+                <span class="bg-yellow-200 px-3 py-1 rounded-full text-yellow-900 shadow-sm">{{ unpaid_count }} Orders</span>
+            </h3>
+            {% if unpaid_count > 0 %}
+            <a href="{% url 'payments:unpaid_orders' %}" class="mt-2 inline-block bg-yellow-600 text-white px-6 py-3 rounded-lg font-bold shadow hover:bg-yellow-700 transition">Go to Payments Queue &rarr;</a>
+            {% else %}
+            <p class="text-gray-500 font-medium">All clear! No pending payments.</p>
+            {% endif %}
+        </div>
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-green-100">
+            <h3 class="text-gray-400 text-sm font-black uppercase tracking-widest mb-2">My Colletions Today</h3>
+            <p class="text-5xl font-extrabold text-green-500">${{ my_collected_today }}</p>
+        </div>
+    </div>
+
+    {% elif 'waiter' in roles %}
+    <!-- Waiter Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-blue-100">
+            <h3 class="text-gray-400 text-sm font-black uppercase tracking-widest mb-2">My Receipts Today</h3>
+            <p class="text-5xl font-extrabold text-gray-800">{{ my_receipts_today }} <span class="text-xl text-gray-400 font-medium ml-2">receipts generated</span></p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-purple-100 flex flex-col justify-center">
+            <a href="{% url 'orders:order_create' %}" class="w-full bg-blue-600 text-white text-center py-5 rounded-xl font-bold text-xl shadow hover:bg-blue-700 transition">
+                + Create New Order
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-8 py-5 border-b border-gray-100 bg-gray-50">
+            <h3 class="text-xl font-bold text-gray-700">Quick Reference</h3>
+        </div>
+        <div class="p-8">
+            <p class="text-gray-500 font-medium">Use the sidebar navigation to access your modules, view specialized DataTables, or pull detailed reports corresponding to your role.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

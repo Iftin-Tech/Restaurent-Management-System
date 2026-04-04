@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="px-8 py-10 max-w-5xl mx-auto h-full overflow-y-auto no-scrollbar">
+    <div class="mb-10 flex justify-between items-end">
+        <div>
+            <a href="{% url 'platform_admin:restaurant_list' %}" class="text-[10px] font-black text-slate-400 hover:text-indigo-600 uppercase tracking-[0.2em] transition">&larr; Back to Command Center</a>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter mt-4 uppercase">{{ title }}</h1>
+            <p class="text-slate-500 font-bold text-sm mt-1">Configure tenant branding and automated high-performance database provisioning.</p>
+        </div>
+        {% if restaurant %}
+        <div class="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-2xl flex items-center">
+            <span class="w-2 h-2 bg-indigo-600 rounded-full mr-2 animate-pulse"></span>
+            <span class="text-indigo-800 font-black text-[10px] uppercase tracking-widest">Editing: {{ restaurant.subdomain }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-900/10 border border-slate-100 overflow-hidden">
+        <form method="POST" enctype="multipart/form-data" class="flex flex-col">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+                <!-- Left: Branding & Core Identity -->
+                <div class="p-10 space-y-8 bg-slate-50/50 border-r border-slate-100">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black">1</div>
+                        <h3 class="text-xs font-black text-indigo-900 uppercase tracking-[0.2em]">Client Identity & Branding</h3>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest">Restaurant Legal Designation</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<p class="text-rose-500 text-[10px] mt-2 font-black uppercase tracking-tight">{{ form.name.errors.0|upper }}</p>{% endif %}
+                        </div>
+                        
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest">Secure Subdomain Cluster</label>
+                            <div class="flex rounded-2xl overflow-hidden shadow-sm border-2 border-slate-100 bg-white focus-within:border-indigo-400 transition">
+                                <span class="bg-slate-50 px-4 flex items-center text-slate-400 font-black text-xs border-r border-slate-100">HTTPS://</span>
+                                {{ form.subdomain }}
+                                <span class="bg-slate-50 px-4 flex items-center text-slate-400 font-black text-xs border-l border-slate-100">.POS-SAAS.CLOUD</span>
+                            </div>
+                            {% if form.subdomain.errors %}<p class="text-rose-500 text-[10px] mt-2 font-black uppercase tracking-tight">{{ form.subdomain.errors.0|upper }}</p>{% endif %}
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest">Identity Color</label>
+                                <div class="relative h-12 w-full rounded-xl overflow-hidden shadow-inner border-2 border-slate-100">
+                                    {{ form.primary_color }}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest">Accent Palette</label>
+                                <div class="relative h-12 w-full rounded-xl overflow-hidden shadow-inner border-2 border-slate-100">
+                                    {{ form.secondary_color }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-white rounded-2xl border-2 border-dashed border-slate-200">
+                            <label class="block text-[10px] font-black text-slate-500 mb-3 uppercase tracking-widest italic">Digital Brand Asset (Logo)</label>
+                            {{ form.logo }}
+                            {% if form.logo.errors %}<p class="text-rose-500 text-[10px] mt-2 font-black uppercase tracking-tight">{{ form.logo.errors.0|upper }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Infrastructure & Provisioning -->
+                <div class="p-10 space-y-8 bg-white">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-black">2</div>
+                        <h3 class="text-xs font-black text-emerald-900 uppercase tracking-[0.2em]">Automated Enterprise Engine</h3>
+                    </div>
+
+                    <div class="bg-emerald-50/50 border border-emerald-100 p-6 rounded-3xl text-emerald-800 text-xs font-bold leading-relaxed shadow-inner">
+                        <div class="flex items-center mb-3">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="font-black uppercase tracking-widest">PostgreSQL Cloud Provisioning Active</span>
+                        </div>
+                        Our high-performance engine will automatically isolate this tenant's data into a dedicated PostgreSQL schema clusters. Validating subdomain cluster availability...
+                    </div>
+
+                    {% if 'manager_username' in form.fields %}
+                    <div class="space-y-6 pt-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Provision Root Admin</h4>
+                            <span class="bg-rose-50 text-rose-500 px-2 py-0.5 rounded text-[8px] font-black uppercase">Admin Access</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest">Master Username</label>
+                            {{ form.manager_username }}
+                            {% if form.manager_username.errors %}<p class="text-rose-500 text-[10px] mt-2 font-black uppercase tracking-tight">{{ form.manager_username.errors.0|upper }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest">Master Password</label>
+                            {{ form.manager_password }}
+                            {% if form.manager_password.errors %}<p class="text-rose-500 text-[10px] mt-2 font-black uppercase tracking-tight">{{ form.manager_password.errors.0|upper }}</p>{% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="py-20 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
+                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <p class="text-xs font-black uppercase tracking-[0.2em]">Infrastructure Locked<br>Database Provisioned</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Global Control -->
+            <div class="p-10 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
+                <div class="flex items-center bg-white p-4 rounded-3xl border border-slate-200 shadow-inner">
+                    <div class="flex items-center h-6 w-12 mr-4 bg-slate-100 rounded-full p-1 relative border border-slate-200">
+                        {{ form.is_active }}
+                        <div class="absolute right-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+                    </div>
+                    <div>
+                        <label for="id_is_active" class="text-xs font-black text-slate-800 uppercase tracking-tight">Tenant Access Status</label>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Toggle to lock/unlock entire restaurant infrastructure</p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <a href="{% url 'platform_admin:restaurant_list' %}" class="bg-white text-slate-500 px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest border border-slate-200 hover:bg-slate-50 transition">Abort</a>
+                    <button type="submit" class="bg-indigo-600 text-white px-12 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-700 shadow-2xl shadow-indigo-900/40 transition transform active:scale-95">
+                        {% if restaurant %}Update Cluster Configuration{% else %}Regiser & Deploy Database{% endif %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    input[type="text"], input[type="password"], input[type="url"], input[type="number"], select {
+        width: 100%;
+        background: transparent;
+        border: none;
+        padding: 12px 16px;
+        font-weight: 800;
+        font-size: 0.875rem;
+        color: #1e293b;
+        outline: none;
+    }
+    input[type="color"] {
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        transform: scale(1.5);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    #id_is_active { opacity: 0; position: absolute; z-index: 10; cursor: pointer; width: 44px; height: 24px; left: 0; top: 0; }
+    #id_is_active:checked + div { transform: translateX(-20px); background: #10b981; }
+</style>
+{% endblock %}

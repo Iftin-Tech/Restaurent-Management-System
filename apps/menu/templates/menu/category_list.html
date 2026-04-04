@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="px-8 py-8 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+         {% if request.tenant %}style="border-top: 4px solid {{ request.tenant.secondary_color }};"{% endif %}>
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Menu Structure</h1>
+            <p class="text-gray-500 font-medium mt-1">Organize your offerings into categories like Appetizers, Main Course, Drinks, etc.</p>
+        </div>
+        
+        <div class="mt-4 md:mt-0 flex gap-3">
+             <a href="{% url 'menu:category_create' %}" class="inline-flex items-center text-white px-6 py-3 rounded-lg font-bold shadow-md transition transform hover:-translate-y-0.5"
+               {% if request.tenant %}style="background-color: {{ request.tenant.secondary_color }};"{% else %}class="bg-blue-600"{% endif %}>
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Create New Folder
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 overflow-hidden max-w-lg mx-auto">
+        <table id="categoriesTable" class="w-full text-left datatable-premium">
+            <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-xs font-black text-gray-400 uppercase tracking-widest">
+                    <th class="p-4 rounded-tl-lg">Category Name</th>
+                    <th class="p-4 text-right rounded-tr-lg border-none shadow-none">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for cat in categories %}
+                <tr class="hover:bg-gray-50 transition group">
+                    <td class="p-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-indigo-500 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M3 7v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-6l-2-2H5c-1.1 0-2 .9-2 2z"></path></svg>
+                            <span class="font-bold text-gray-800 text-lg">{{ cat.name }}</span>
+                        </div>
+                    </td>
+                    <td class="p-4 text-right">
+                         <a href="#" class="text-sm font-bold text-gray-400 hover:text-gray-900 px-3 py-1.5 rounded-lg transition">Rename</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#categoriesTable').DataTable({
+        responsive: true,
+        pageLength: 20,
+        language: {
+             search: "_INPUT_",
+             searchPlaceholder: "Search categories..."
+        },
+        dom: '<"flex justify-between items-center mb-6"<"relative"f>>rt<"flex justify-between items-center mt-6 text-sm font-medium"ip>',
+    });
+});
+</script>
+{% endblock %}

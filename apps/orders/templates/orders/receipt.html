@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt #{{ order.receipt_number }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+        
+        @media print {
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            @page { 
+                margin: 0; 
+                size: 80mm auto; /* Standard thermal printer width */
+            }
+            #receipt { 
+                box-shadow: none !important; 
+                border: none !important; 
+                width: 100% !important;
+                padding: 0 !important;
+            }
+        }
+        
+        #receipt {
+            font-family: 'Courier Prime', monospace;
+            max-width: 80mm;
+            margin: auto;
+            background: white;
+            padding: 10px;
+        }
+        
+        .divider { border-top: 1px dashed #000; margin: 10px 0; }
+        .text-mono { font-family: 'Courier Prime', monospace; }
+    </style>
+</head>
+<body class="bg-gray-200 py-10">
+    
+    <div class="fixed top-5 left-1/2 -translate-x-1/2 no-print flex items-center gap-3 mb-10">
+        <a href="{% url 'orders:order_create' %}" class="bg-slate-800 text-white px-7 py-3 rounded-full font-black text-lg shadow-xl hover:bg-slate-900 transition">
+            Back
+        </a>
+        <button onclick="window.print()" class="bg-indigo-600 text-white px-7 py-3 rounded-full font-black text-lg shadow-xl hover:bg-indigo-700 transition">
+            Print
+        </button>
+    </div>
+
+    <div id="receipt" class="shadow-2xl border border-gray-300">
+        <!-- Logo / Name -->
+        <div class="text-center">
+            {% if request.tenant and request.tenant.logo %}
+                <img src="{{ request.tenant.logo.url }}" alt="Logo" class="w-20 h-20 object-contain mx-auto mb-2 grayscale">
+            {% endif %}
+            <h1 class="text-xl font-bold uppercase tracking-widest leading-tight">
+                {{ request.tenant.name|default:"Restaurant Platform" }}
+            </h1>
+            <p class="text-[10px] italic">Automated Billing System</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Meta Info -->
+        <div class="text-[11px] font-bold">
+            <div class="flex justify-between">
+                <span>RECEIPT #:</span>
+                <span>{{ order.receipt_number }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span>DATE:</span>
+                <span>{{ order.created_at|date:"M d, Y P" }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span>WAITER:</span>
+                <span>{{ order.waiter.username|upper }}</span>
+            </div>
+            {% if order.table_number %}
+            <div class="flex justify-between">
+                <span>TABLE:</span>
+                <span>{{ order.table_number|upper }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Items Table -->
+        <table class="w-full text-xs font-bold">
+            <thead class="text-[10px]">
+                <tr class="text-left border-b border-black">
+                    <th class="py-2">ITEM</th>
+                    <th class="py-2 text-right">QTY</th>
+                    <th class="py-2 text-right">PRICE</th>
+                    <th class="py-2 text-right">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td class="py-2 leading-tight uppercase font-black overflow-hidden truncate max-w-[80px]">{{ item.menu_item.name }}</td>
+                    <td class="py-2 text-right">{{ item.quantity }}</td>
+                    <td class="py-2 text-right">${{ item.unit_price }}</td>
+                    <td class="py-2 text-right font-black border-l border-gray-100 pl-1">${{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="divider"></div>
+
+        <!-- Total -->
+        <div class="space-y-1">
+            <div class="flex justify-between font-bold text-xs uppercase">
+                <span>SUBTOTAL:</span>
+                <span>${{ order.total_amount }}</span>
+            </div>
+            <div class="flex justify-between font-bold text-xs uppercase">
+                <span>GST / TAX (0%):</span>
+                <span>$0.00</span>
+            </div>
+            <div class="flex justify-between font-black text-lg border-t border-black pt-2 uppercase tracking-tighter">
+                <span>TOTAL:</span>
+                <span>${{ order.total_amount }}</span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Footer Footer -->
+        <div class="text-center space-y-2 mt-4 select-none">
+            <div class="flex justify-center space-x-1 grayscale opacity-50">
+               <!-- Barcode simulation -->
+               <div class="w-0.5 h-6 bg-black"></div><div class="w-1 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-1 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-2 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div>
+               <div class="w-0.5 h-6 bg-black"></div><div class="w-1 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-1 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-2 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div>
+            </div>
+            <p class="text-[10px] font-black uppercase tracking-widest italic-custom">THANK YOU FOR YOUR PATRONAGE!</p>
+            <p class="text-[8px] font-medium opacity-70">Power by Cloud-POS SaaS</p>
+        </div>
+    </div>
+
+    <!-- Auto-print trigger -->
+    <script>
+        {% if 'print' in request.path %}
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        });
+        {% endif %}
+    </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Professional Clean Login Portal (Reference: Madrasa Management System Design) -->
+<div class="fixed inset-0 flex items-center justify-center p-6 bg-[#f4f7f6] font-['Outfit']">
+    
+    <div class="w-full max-w-[440px] animate-in fade-in zoom-in-95 duration-500">
+        <!-- Floating Login Card -->
+        <div class="bg-white rounded-[2rem] shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-slate-100 p-10 sm:p-14 relative">
+            
+            <!-- Branding Header -->
+            <div class="flex flex-col items-center text-center mb-10">
+                <!-- Circular Icon Wrapper -->
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mb-6 ring-[12px] ring-emerald-50 bg-emerald-50 transition-transform hover:scale-105 duration-300 shadow-inner"
+                    {% if request.tenant %}style="background-color: {{ request.tenant.primary_color }}15; ring-color: {{ request.tenant.primary_color }}15;"{% endif %}>
+                    
+                    {% if request.tenant and request.tenant.logo %}
+                        <img src="{{ request.tenant.logo.url }}" class="w-12 h-12 object-contain" alt="Logo">
+                    {% else %}
+                        <!-- Default Icon matches reference photo style -->
+                        <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    {% endif %}
+                </div>
+
+                <!-- Lora Serif Title -->
+                <h1 class="text-3xl font-bold tracking-tight text-emerald-900 font-['Lora']"
+                    {% if request.tenant %}style="color: {{ request.tenant.primary_color }};"{% else %}class="text-emerald-800"{% endif %}>
+                    {% if request.tenant %}{{ request.tenant.name }}{% else %}Platform Command{% endif %}
+                </h1>
+                <p class="text-slate-400 font-medium text-[11px] mt-2 mb-2">
+                    {% if request.tenant %}Restaurant Management System{% else %}Central POS Infrastructure{% endif %}
+                </p>
+            </div>
+
+            <!-- Login Form (Exact Image Style) -->
+            <form class="space-y-6" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-xs font-bold text-slate-800 mb-2 block">Username</label>
+                        <input id="username" name="username" type="text" required placeholder="Enter your username"
+                            class="w-full bg-white border border-slate-200 p-4 rounded-xl font-medium text-slate-600 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-300">
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-bold text-slate-800 mb-2 block">Password</label>
+                        <input id="password" name="password" type="password" required placeholder="••••••••"
+                            class="w-full bg-white border border-slate-200 p-4 rounded-xl font-medium text-slate-600 text-sm outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all placeholder:text-slate-300">
+                    </div>
+                </div>
+
+                <!-- Bottom Links (Exact Image Placement) -->
+                <div class="flex items-center justify-between text-xs font-medium pt-1">
+                    <label class="flex items-center text-slate-500 cursor-pointer">
+                        <input type="checkbox" class="mr-2 rounded border-slate-200 text-emerald-600 focus:ring-emerald-500" checked>
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="text-emerald-600 font-bold hover:underline"
+                        {% if request.tenant %}style="color: {{ request.tenant.primary_color }};"{% endif %}>Secure Login</a>
+                </div>
+
+                {% if form.errors %}
+                <div class="p-3 bg-red-50 border border-red-100 rounded-xl text-center">
+                    <span class="text-red-600 text-[10px] font-bold">Invalid identity cluster. Check credentials.</span>
+                </div>
+                {% endif %}
+
+                <!-- Button with Icon (Exact Image Style) -->
+                <button type="submit" class="w-full flex items-center justify-center p-4 rounded-xl font-bold text-sm text-white shadow-lg transition-all duration-300 hover:opacity-90 active:scale-95 bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200"
+                    {% if request.tenant %}style="background-color: {{ request.tenant.primary_color }}; shadow-color: {{ request.tenant.primary_color }}30;"{% endif %}>
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Sign In
+                </button>
+            </form>
+
+            <div class="mt-12 text-center text-[10px] text-slate-400 font-medium">
+                <p>&copy; 2026 {% if request.tenant %}{{ request.tenant.name }}{% else %}POS SAAS{% endif %}. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

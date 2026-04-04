@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Orders Timeline</h1>
+        <a href="{% url 'orders:order_create' %}" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition">Create New Bill</a>
+    </div>
+
+    <div class="bg-white rounded shadow p-4">
+        <table id="ordersTable" class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-100 border-b">
+                    <th class="p-4">Receipt #</th>
+                    <th class="p-4">Date & Time</th>
+                    <th class="p-4">Waiter</th>
+                    <th class="p-4">Amount</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-4 font-mono font-bold text-gray-700">{{ order.receipt_number }}</td>
+                    <td class="p-4 text-sm">{{ order.created_at|date:"M d, Y H:i" }}</td>
+                    <td class="p-4">{{ order.waiter.username }}</td>
+                    <td class="p-4 font-bold text-gray-900">${{ order.total_amount }}</td>
+                    <td class="p-4">
+                        {% if order.status == 'BILLED' %}
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-full">BILLED - Unpaid</span>
+                        {% elif order.status == 'PAID' %}
+                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">PAID</span>
+                        {% else %}
+                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full">CANCELLED</span>
+                        {% endif %}
+                    </td>
+                    <td class="p-4">
+                        <a href="{% url 'orders:print_receipt' order.pk %}" class="text-blue-600 hover:text-blue-800 hover:underline mr-2 text-sm">Receipt</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if($.fn.DataTable) {
+            $('#ordersTable').DataTable({
+                order: [[1, "desc"]],
+                responsive: true
+            });
+        }
+    });
+</script>
+{% endblock %}

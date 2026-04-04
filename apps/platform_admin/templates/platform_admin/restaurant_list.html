@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="px-8 py-8 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Client Restaurants</h1>
+            <p class="text-gray-500 font-medium mt-1">Manage global tenant database connections and deployments.</p>
+        </div>
+        
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'platform_admin:restaurant_create' %}" class="inline-flex items-center bg-indigo-600 text-white px-6 py-3 rounded-lg font-bold shadow-md hover:bg-indigo-700 transition transform hover:-translate-y-0.5">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                + Deploy New Restaurant
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg shadow-sm border-l-4 font-medium
+            {% if message.tags == 'success' %}bg-green-50 text-green-800 border-green-500
+            {% elif message.tags == 'error' %}bg-red-50 text-red-800 border-red-500
+            {% else %}bg-blue-50 text-blue-800 border-blue-500{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 overflow-hidden">
+        <table id="restaurantsTable" class="w-full text-left datatable-premium">
+            <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-xs font-black text-gray-400 uppercase tracking-widest">
+                    <th class="p-4 rounded-tl-lg">Restaurant Name</th>
+                    <th class="p-4">Tenant Access (Subdomain)</th>
+                    <th class="p-4">DB Config</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4">Created On</th>
+                    <th class="p-4 text-right rounded-tr-lg border-none shadow-none">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for rest in restaurants %}
+                <tr class="hover:bg-indigo-50 transition group">
+                    <td class="p-4 font-extrabold text-gray-800 text-base">{{ rest.name }}</td>
+                    <td class="p-4">
+                        <a href="http://{{ rest.subdomain }}.localhost:8000" target="_blank" class="inline-flex items-center text-sm font-bold text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                            {{ rest.subdomain }}
+                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </td>
+                    <td class="p-4 text-xs font-mono text-gray-500 bg-gray-50 rounded group-hover:bg-white">{{ rest.db_name }}</td>
+                    <td class="p-4">
+                        {% if rest.is_active %}
+                        <span class="bg-green-100 text-green-700 font-bold text-xs uppercase tracking-wider px-3 py-1 rounded-full border border-green-200">Active</span>
+                        {% else %}
+                        <span class="bg-red-100 text-red-700 font-bold text-xs uppercase tracking-wider px-3 py-1 rounded-full border border-red-200">Suspended</span>
+                        {% endif %}
+                    </td>
+                    <td class="p-4 text-sm font-medium text-gray-500 whitespace-nowrap">{{ rest.created_at|date:"M d, Y" }}</td>
+                    <td class="p-4 text-right space-x-2 whitespace-nowrap">
+                        <a href="{% url 'platform_admin:restaurant_update' rest.id %}" class="inline-block text-sm font-bold bg-white text-gray-600 hover:text-blue-600 border border-gray-200 hover:border-blue-300 px-3 py-1.5 rounded-lg transition shadow-sm">
+                            Edit
+                        </a>
+                        <form action="{% url 'platform_admin:restaurant_toggle' rest.id %}" method="POST" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-sm font-bold bg-white {% if rest.is_active %}text-red-500 hover:text-red-700 hover:bg-red-50 border-red-200{% else %}text-green-600 hover:text-green-800 hover:bg-green-50 border-green-200{% endif %} border px-3 py-1.5 rounded-lg transition shadow-sm" onclick="return confirm('Are you sure you want to change the status of {{ rest.name }}?');">
+                                {% if rest.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if($.fn.DataTable) {
+        $('#restaurantsTable').DataTable({
+            responsive: true,
+            pageLength: 20,
+            order: [[4, "desc"]],
+            language: {
+                search: "",
+                searchPlaceholder: "Search restaurants, subdomains..."
+            },
+            dom: '<"flex justify-between items-center mb-4"<"text-sm font-medium"l><"relative"f>>rt<"flex justify-between items-center mt-4 text-sm font-medium"ip>',
+            columnDefs: [
+                { orderable: false, targets: [5] } // disable sorting on actions
+            ]
+        });
+        
+        // Tailwind styling integration for datatable search inputs
+        $('.dataTables_filter input').addClass('w-64 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border pl-3 text-sm');
+    }
+});
+</script>
+{% endblock %}

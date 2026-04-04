@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="px-8 py-10 max-w-4xl mx-auto">
+    <div class="mb-8">
+        <a href="{% url 'menu:item_list' %}" class="text-sm font-black text-gray-400 hover:text-indigo-600 uppercase tracking-widest transition">&larr; Back to Catalog Items</a>
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mt-3">Add Menu Product</h1>
+        <p class="text-gray-500 font-medium mt-1">Populate your restaurant's catalog with new dishes, modifiers, and beverage options.</p>
+    </div>
+
+    <div class="bg-white p-10 rounded-2xl shadow-xl border-t-8 transition-transform hover:scale-[1.005]"
+         {% if request.tenant %}style="border-top-color: {{ request.tenant.primary_color }};"{% else %}class="border-blue-600"{% endif %}>
+        
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Main Details -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-black text-gray-600 uppercase tracking-widest mb-1.5">Dish/Product Name</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}<p class="text-red-500 text-xs mt-1 font-bold">{{ form.name.errors.0 }}</p>{% endif %}
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-black text-gray-600 uppercase tracking-widest mb-1.5">Pricing (USD)</label>
+                        {{ form.price }}
+                        {% if form.price.errors %}<p class="text-red-500 text-xs mt-1 font-bold">{{ form.price.errors.0 }}</p>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Classification Details -->
+                <div class="space-y-4">
+                    <div>
+                         <label class="block text-xs font-black text-gray-600 uppercase tracking-widest mb-1.5">Organization Category</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}<p class="text-red-500 text-xs mt-1 font-bold">{{ form.category.errors.0 }}</p>{% endif %}
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 bg-gray-50 p-4 rounded-xl border border-gray-100 hover:border-indigo-400 transition cursor-pointer">
+                        <div class="flex items-center h-5">
+                             {{ form.is_active }}
+                        </div>
+                        <div class="ml-3 text-sm flex flex-col">
+                            <label class="font-black text-gray-700 uppercase tracking-widest text-[11px]">Available for Order</label>
+                            <span class="text-gray-400 font-medium text-xs mt-0.5 whitespace-nowrap">Instantly publish this item to the digital menu.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6 flex gap-4">
+                <a href="{% url 'menu:item_list' %}" class="flex-1 bg-white border-2 border-gray-200 text-gray-700 text-center py-4 rounded-xl hover:bg-gray-50 font-black transition">Cancel</a>
+                <button type="submit" class="flex-[3] text-white py-4 rounded-xl font-black text-lg shadow-2xl flex justify-center items-center transition transform active:scale-95"
+                         {% if request.tenant %}style="background-color: {{ request.tenant.primary_color }};" 
+                         onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter='none'"{% else %}class="bg-blue-600 hover:bg-blue-700"{% endif %}>
+                    Finalize Deployment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    input[type="text"], input[type="number"], select {
+        width: 100%;
+        border-radius: 0.75rem;
+        border: 2px solid #f3f4f6;
+        padding: 1rem 1.25rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #111827;
+        transition: all 0.2s;
+        background-color: #f9fafb;
+    }
+    input:focus, select:focus {
+        outline: none;
+        border-color: #ec4899;
+        background-color: white;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    input[type="checkbox"] {
+        height: 1.5rem;
+        width: 1.5rem;
+        border-radius: 0.5rem;
+        border: 2px solid #d1d5db;
+        color: #ec4899;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

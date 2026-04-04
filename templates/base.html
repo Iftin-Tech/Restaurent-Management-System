@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ request.tenant.name|default:"POS Platform" }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: {{ request.tenant.primary_color|default:"#3b82f6" }};
+            --secondary-color: {{ request.tenant.secondary_color|default:"#ec4899" }};
+        }
+        body { font-family: 'Outfit', sans-serif; height: 100vh; overflow: hidden; }
+        .custom-sidebar::-webkit-scrollbar { width: 4px; }
+        .custom-sidebar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        
+        .nav-link-active { 
+            background: rgba(255, 255, 255, 0.05); 
+            border-left: 3px solid var(--primary-color);
+            color: white !important;
+            font-weight: 800 !important;
+        }
+        
+        .premium-glow {
+            box-shadow: 0 0 20px -5px var(--primary-color);
+        }
+    </style>
+</head>
+<body class="bg-[#f8fafc]">
+
+<div class="flex h-screen w-screen overflow-hidden">
+    
+    {% if request.user.is_authenticated %}
+    <!-- Sidebar -->
+    <aside class="w-72 bg-[#0f172a] h-full flex flex-col shrink-0 overflow-y-auto custom-sidebar no-print transition-all duration-300">
+        <!-- Logo Section -->
+        <div class="p-8 flex items-center mb-2">
+            {% if request.tenant and request.tenant.logo %}
+                <img src="{{ request.tenant.logo.url }}" class="w-12 h-12 rounded-2xl mr-4 object-cover premium-glow border-2 border-white/10" alt="Logo">
+            {% else %}
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl mr-4 flex items-center justify-center text-white font-black text-xl shadow-2xl">R</div>
+            {% endif %}
+            <div class="overflow-hidden">
+                {% if request.user.is_superuser %}
+                    <h1 class="text-white font-black tracking-tighter text-2xl truncate leading-none uppercase italic font-['Lora']">Platform Command</h1>
+                    <div class="flex items-center mt-1.5 overflow-hidden">
+                        <span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2 animate-pulse shrink-0"></span>
+                        <span class="text-amber-400 font-bold text-[10px] uppercase tracking-widest truncate">Root Infrastructure</span>
+                    </div>
+                {% else %}
+                    <h1 class="text-white font-black tracking-tighter text-2xl truncate leading-none uppercase font-['Lora']">{{ request.tenant.name|default:"POS SAAS" }}</h1>
+                    <div class="flex items-center mt-1.5 overflow-hidden">
+                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-2 animate-pulse shrink-0"></span>
+                        <span class="text-slate-400 font-bold text-[10px] uppercase tracking-widest truncate">{{ request.tenant.db_name }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="flex-1 px-4 space-y-1.5 py-4">
+            {% if request.user.is_superuser %}
+                <div class="pb-2 text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] px-4 opacity-50">Platform Management</div>
+                <a href="/platform/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if '/platform/' in request.path %}nav-link-active{% endif %}">
+                    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    Restaurants
+                </a>
+                <a href="/superadmin/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group">
+                    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Django Admin
+                </a>
+
+                <div class="pt-8 pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50 border-t border-white/5 mt-6">Operation Hub</div>
+            {% else %}
+                <div class="pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50">Operation Hub</div>
+            {% endif %}
+
+            <a href="/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if request.path == '/' %}nav-link-active{% endif %}">
+                <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Dashboard
+            </a>
+
+            {% for r_obj in request.user.roles.all %}
+                {% with role=r_obj.role.name %}
+                    
+                    <!-- Manager/Admin Sidebar Section -->
+                    {% if role == 'manager' %}
+                        <div class="pt-8 pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50 border-t border-white/5 mt-6">Administrative</div>
+                        <a href="/accounts/users/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if '/accounts/users/' in request.path %}nav-link-active{% endif %}">
+                            <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            Users
+                        </a>
+                        <a href="/menu/categories/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if '/menu/categories/' in request.path %}nav-link-active{% endif %}">
+                            <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-6l-2-2H5c-1.1 0-2 .9-2 2z"></path></svg>
+                            Categories
+                        </a>
+                        <a href="/menu/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if request.path == '/menu/' %}nav-link-active{% endif %}">
+                            <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            Menu
+                        </a>
+                        <div class="pt-8 pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50 border-t border-white/5 mt-6">Orders</div>
+                        <a href="/orders/new/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if '/orders/new/' in request.path %}nav-link-active{% endif %}">
+                            <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            Billing Desk (POS)
+                        </a>
+                        <a href="/orders/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if request.path == '/orders/' %}nav-link-active{% endif %}">
+                            <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h6M9 9h8M9 13h8M9 17h5"></path></svg>
+                            Orders Timeline
+                        </a>
+                        <div class="pt-8 pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50 border-t border-white/5 mt-6">Financials</div>
+                        <a href="/payments/unpaid/" class="flex items-center justify-between px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if 'payments/unpaid' in request.path %}nav-link-active{% endif %}">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Payment
+                            </div>
+                        </a>
+                        <div class="pt-8 pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50 border-t border-white/5 mt-6 shrink-0">Analytics</div>
+                        <div x-data="{ open: true }" class="px-2">
+                            <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                                    <span>Reports</span>
+                                </div>
+                                <svg class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div x-show="open" x-collapse x-cloak class="mt-1 ml-4 border-l border-white/10 space-y-0.5">
+                                <a href="/reports/sales/" class="flex items-center px-6 py-2 text-[11px] font-black text-slate-500 hover:text-blue-400 transition group {% if '/reports/sales/' in request.path %}text-blue-400 bg-white/5{% endif %}">Sales Report</a>
+                                <a href="/reports/pending/" class="flex items-center px-6 py-2 text-[11px] font-black text-slate-500 hover:text-blue-400 transition group {% if '/reports/pending/' in request.path %}text-blue-400 bg-white/5{% endif %}">Pending Orders</a>
+                                <a href="/reports/cancelled/" class="flex items-center px-6 py-2 text-[11px] font-black text-slate-500 hover:text-blue-400 transition group {% if '/reports/cancelled/' in request.path %}text-blue-400 bg-white/5{% endif %}">Cancelled Orders</a>
+                                <a href="/reports/top-items/" class="flex items-center px-6 py-2 text-[11px] font-black text-slate-500 hover:text-blue-400 transition group {% if '/reports/top-items/' in request.path %}text-blue-400 bg-white/5{% endif %}">Top Items</a>
+                                <a href="/reports/cashier/" class="flex items-center px-6 py-2 text-[11px] font-black text-slate-500 hover:text-blue-400 transition group {% if '/reports/cashier/' in request.path %}text-blue-400 bg-white/5{% endif %}">Cashier Collections</a>
+                                <a href="/reports/waiter-perf/" class="flex items-center px-6 py-2 text-[11px] font-black text-slate-500 hover:text-blue-400 transition group {% if '/reports/waiter-perf/' in request.path %}text-blue-400 bg-white/5{% endif %}">Waiter Perf</a>
+                            </div>
+                        </div>
+
+                    <!-- Cashier Sidebar Section -->
+                    {% elif role == 'cashier' %}
+                        <div class="pt-8 pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50 border-t border-white/5 mt-6">Treasury</div>
+                        <a href="/payments/unpaid/" class="flex items-center justify-between px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if 'payments/unpaid' in request.path %}nav-link-active{% endif %}">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Payment Gateway
+                            </div>
+                        </a>
+                        <a href="/orders/new/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if '/orders/new/' in request.path %}nav-link-active{% endif %}">
+                            <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            Billing Desk (POS)
+                        </a>
+
+                    <!-- Waiter Sidebar Section -->
+                    {% elif role == 'waiter' %}
+                        <div class="pt-8 pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50 border-t border-white/5 mt-6">Dining Area</div>
+                        <a href="/orders/new/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if '/orders/new/' in request.path %}nav-link-active{% endif %}">
+                            <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            Order Entry (POS)
+                        </a>
+                        <a href="/menu/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group">
+                            <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            Menu Viewer
+                        </a>
+                    {% endif %}
+
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <!-- Logout Section -->
+        <div class="p-6 border-t border-white/5 bg-slate-950/50 mt-auto">
+            <a href="/accounts/logout/" class="flex items-center px-4 py-3 text-sm font-black text-rose-500 bg-rose-500/5 rounded-xl border border-rose-500/20 hover:bg-rose-500 hover:text-white transition shadow-lg shadow-rose-950/20">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Secure Sign Out
+            </a>
+        </div>
+    </aside>
+    {% endif %}
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 bg-[#f8fafc]">
+        
+        {% if request.user.is_authenticated %}
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-10 shrink-0 z-10 w-full">
+            <div class="flex items-center">
+                <div class="flex flex-col">
+                    <span class="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">System Status</span>
+                    <span class="text-slate-800 font-bold text-lg mt-1 font-['Lora'] shadow-none uppercase italic tracking-tighter">Live Intelligence</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-black text-sm mr-3 uppercase">{{ request.user.username.0 }}</div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Logged as</span>
+                        <span class="text-slate-800 font-bold text-xs">{{ request.user.username }}</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        {% endif %}
+
+        <main class="flex-1 overflow-y-auto w-full">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    </div>
+</div>
+
+</body>
+</html>

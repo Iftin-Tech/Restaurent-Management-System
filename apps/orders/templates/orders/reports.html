@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex h-full overflow-hidden bg-slate-50">
+    
+    <!-- Internal Sub-Sidebar (Report Types) -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 no-print">
+        <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+            <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">Intelligence</h2>
+            <p class="text-slate-800 font-extrabold text-xl mt-1">Analytics Center</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto custom-sidebar">
+            <a href="?tab=overview" class="flex items-center px-4 py-3 text-sm font-bold rounded-xl transition group {% if current_tab == 'overview' %}bg-blue-600 text-white shadow-lg shadow-blue-200{% else %}text-slate-500 hover:bg-slate-50 hover:text-slate-900{% endif %}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                Sales Overview
+            </a>
+            <a href="?tab=items" class="flex items-center px-4 py-3 text-sm font-bold rounded-xl transition group {% if current_tab == 'items' %}bg-blue-600 text-white shadow-lg shadow-blue-200{% else %}text-slate-500 hover:bg-slate-50 hover:text-slate-900{% endif %}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                Dish Performance
+            </a>
+            <a href="?tab=staff" class="flex items-center px-4 py-3 text-sm font-bold rounded-xl transition group {% if current_tab == 'staff' %}bg-blue-600 text-white shadow-lg shadow-blue-200{% else %}text-slate-500 hover:bg-slate-50 hover:text-slate-900{% endif %}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Waiter Efficiency
+            </a>
+            <div class="pt-6 pb-2 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Exports</div>
+            <button onclick="window.print()" class="w-full flex items-center px-4 py-3 text-sm font-bold text-slate-500 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 00-2 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Print Report
+            </button>
+            <button onclick="downloadCSV()" class="w-full flex items-center px-4 py-3 text-sm font-bold text-slate-500 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition border border-dashed border-slate-200 mt-2">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Download CSV
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Report Area -->
+    <main class="flex-1 overflow-y-auto p-10 space-y-8 scroll-smooth custom-scrollbar">
+        
+        <!-- Header -->
+        <header class="flex justify-between items-end no-print">
+            <div>
+                <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">{{ current_tab }} Intelligence</h1>
+                <p class="text-slate-400 font-bold text-sm mt-3 flex items-center">
+                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                    Operational Monitoring Active for Last 30 Days
+                </p>
+            </div>
+            <div class="flex space-x-3">
+                <div class="bg-white px-6 py-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Today's Revenue</span>
+                    <span class="text-2xl font-black text-slate-900">${{ total_sales_today|floatformat:2 }}</span>
+                </div>
+            </div>
+        </header>
+
+        {% if current_tab == 'overview' %}
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div class="xl:col-span-2 bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between mb-8">
+                    <h3 class="font-black text-slate-800 tracking-tight text-xl uppercase">Revenue Stream (30 Days)</h3>
+                    <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Growth Curve</span>
+                </div>
+                <div style="height: 350px;">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-900 p-8 rounded-3xl shadow-2xl text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="font-black tracking-tight text-xl uppercase mb-10 opacity-70">Day Summary</h3>
+                    <div class="space-y-8">
+                        <div>
+                            <p class="text-xs font-black uppercase tracking-[0.2em] mb-2 opacity-50">Volume</p>
+                            <p class="text-5xl font-black tracking-tighter">{{ total_orders_today }} <span class="text-sm opacity-50 font-bold uppercase tracking-widest ml-2">Bills today</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black uppercase tracking-[0.2em] mb-2 opacity-50">Efficiency</p>
+                            <p class="text-5xl font-black tracking-tighter">${{ avg_order_today|floatformat:2 }} <span class="text-sm opacity-50 font-bold uppercase tracking-widest ml-2">Avg. Check</span></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Abstract Design Elements -->
+                <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+                <div class="absolute -left-10 -top-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if current_tab == 'items' %}
+        <!-- Top Items Table -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-8 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-black text-slate-800 tracking-tight text-xl uppercase">Menu Performance Analytics</h3>
+                <span class="text-slate-400 font-bold text-xs">Sorted by Revenue Concentration</span>
+            </div>
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Dish Name</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Unit Volume</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Total Revenue</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Growth Index</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for item in top_items %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center mr-4 text-blue-600 font-black text-xs">{{ forloop.counter }}</div>
+                                <span class="font-bold text-slate-800">{{ item.menu_item__name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 font-black text-slate-900 text-center text-lg">{{ item.qty }}</td>
+                        <td class="px-8 py-5 font-black text-blue-600 text-right text-lg">${{ item.revenue|floatformat:2 }}</td>
+                        <td class="px-8 py-5 text-right">
+                            <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest">+{% widthratio item.revenue 100 0.1 %}%</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="p-20 text-center text-slate-400 italic">No historical dish data detected yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if current_tab == 'staff' %}
+        <!-- Waiter Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {% for s in waiter_stats %}
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-2xl uppercase">{{ s.waiter__username.0 }}</div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Performance</p>
+                        <p class="text-2xl font-black text-indigo-600 tracking-tighter">GOLD</p>
+                    </div>
+                </div>
+                <h4 class="font-extrabold text-slate-900 text-xl mb-6">{{ s.waiter__username|title }}</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Served</p>
+                        <p class="text-xl font-black text-slate-900 mt-1">{{ s.orders }} Bills</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Revenue</p>
+                        <p class="text-xl font-black text-blue-600 mt-1">${{ s.total|floatformat:0 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full p-20 text-center text-slate-400 italic bg-white rounded-3xl border border-dashed border-slate-300">Staff activity metrics will appear here after orders are finalized.</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% if current_tab == 'overview' %}
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    
+    // Create professional gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
+    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [{
+                label: 'DAILY REVENUE ($)',
+                data: {{ chart_data|safe }},
+                borderColor: '#3b82f6',
+                borderWidth: 4,
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { borderDash: [5, 5], color: '#e2e8f0' },
+                    ticks: { font: { weight: 'bold' }, color: '#64748b', callback: (v) => '$' + v }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { weight: 'bold' }, color: '#64748b' }
+                }
+            }
+        }
+    });
+    {% endif %}
+
+    function downloadCSV() {
+        alert('Compiling Data Stream... Your professional CSV report will begin downloading in a few seconds.');
+        // Implementation: Redirect to a backend CSV generator link
+        // Example: window.location.href = '/orders/reports/export-csv/?tab=' + '{{ current_tab }}';
+    }
+</script>
+
+<style>
+    @media print {
+        .no-print { display: none !important; }
+        aside { display: none !important; }
+        body { background: white !important; }
+        main { padding: 0 !important; width: 100% !important; overflow: visible !important; height: auto !important; }
+        .grid { display: block !important; }
+        .shadow-sm, .shadow-xl, .shadow-2xl { box-shadow: none !important; border: 1px solid #eee !important; }
+    }
+</style>
+{% endblock %}

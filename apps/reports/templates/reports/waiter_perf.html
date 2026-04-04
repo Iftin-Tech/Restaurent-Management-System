@@ -1,0 +1,29 @@
+{% extends 'reports/base_report.html' %}
+{% block report_content %}
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+    {% for s in stats %}
+    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+        <div class="flex justify-between items-start mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-2xl uppercase">{{ s.waiter__username.0 }}</div>
+            <div class="text-right">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Rank Status</p>
+                <p class="text-2xl font-black text-indigo-600 tracking-tighter">ELITE</p>
+            </div>
+        </div>
+        <h4 class="font-extrabold text-slate-900 text-xl mb-6 truncate uppercase italic tracking-tighter">{{ s.waiter__username }}</h4>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col items-center">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Served</p>
+                <p class="text-2xl font-black text-slate-950 mt-1 tracking-tighter">{{ s.orders }}</p>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col items-center">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Value</p>
+                <p class="text-2xl font-black text-blue-600 mt-1 tracking-tighter">${{ s.total|floatformat:0 }}</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full p-20 text-center text-slate-400 italic bg-white rounded-3xl border border-dashed border-slate-300 uppercase tracking-widest font-black leading-none opacity-50">Personnel efficiency metrics offline. Perform transactions to activate analysis.</div>
+    {% endfor %}
+</div>
+{% endblock %}

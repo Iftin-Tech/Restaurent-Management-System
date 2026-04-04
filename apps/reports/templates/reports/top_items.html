@@ -1,0 +1,33 @@
+{% extends 'reports/base_report.html' %}
+{% block report_content %}
+<div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        <h3 class="font-black text-slate-800 tracking-tighter text-xl uppercase italic">DISH POPULARITY & CONCENTRATION</h3>
+        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Intelligence Layer: Product Alpha</span>
+    </div>
+    <table class="w-full text-left">
+        <thead class="bg-slate-50 border-b border-slate-100">
+            <tr>
+                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Rank</th>
+                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Menu Designation</th>
+                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Volume Sold</th>
+                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Revenue Share</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 italic">
+            {% for i in items %}
+            <tr class="hover:bg-blue-50/10 transition">
+                <td class="px-8 py-4 text-center">
+                    <span class="font-black text-slate-300 tracking-tighter text-3xl">{{ forloop.counter }}</span>
+                </td>
+                <td class="px-8 py-4 font-black text-slate-900 text-sm uppercase">{{ i.menu_item__name }}</td>
+                <td class="px-8 py-4 font-black text-slate-700 text-center text-lg italic tracking-tighter">{{ i.qty }}</td>
+                <td class="px-8 py-4 font-black text-blue-600 text-right text-lg tracking-tighter shadow-[inset_-4px_0_0_#3b82f6] pr-10">${{ i.revenue|floatformat:2 }}</td>
+            </tr>
+                {% empty %}
+            <tr><td colspan="4" class="p-20 text-center text-slate-400 italic">Inventory circulation too low for analysis.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

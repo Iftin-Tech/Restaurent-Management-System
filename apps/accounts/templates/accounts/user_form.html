@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-white min-h-screen flex items-center justify-center p-6 font-['Outfit']">
+    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-slate-100 p-10">
+        
+        <form method="POST" class="space-y-8">
+            {% csrf_token %}
+            
+            <!-- Full Name -->
+            <div class="space-y-2">
+                <label class="text-sm font-bold text-slate-700 block">Full Name <span class="text-rose-500">*</span></label>
+                {{ form.full_name }}
+                {% if form.full_name.errors %}<p class="text-rose-500 text-xs mt-1">{{ form.full_name.errors.0 }}</p>{% endif %}
+            </div>
+
+            <!-- Username & Email Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700 block">Username <span class="text-rose-500">*</span></label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<p class="text-rose-500 text-xs mt-1">{{ form.username.errors.0 }}</p>{% endif %}
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700 block">Email <span class="text-rose-500">*</span></label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<p class="text-rose-500 text-xs mt-1">{{ form.email.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <!-- Phone & Role (Majmuuca in image) Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700 block">Phone Number</label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}<p class="text-rose-500 text-xs mt-1">{{ form.phone_number.errors.0 }}</p>{% endif %}
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-slate-700 block">Assign to Role <span class="text-rose-500">*</span></label>
+                    {{ form.role }}
+                    {% if form.role.errors %}<p class="text-rose-500 text-xs mt-1">{{ form.role.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="space-y-2">
+                <label class="text-sm font-bold text-slate-700 block">Password <span class="text-slate-400 font-medium">(default: pos123)</span></label>
+                <div class="relative">
+                    {{ form.password }}
+                </div>
+                {% if form.password.errors %}<p class="text-rose-500 text-xs mt-1">{{ form.password.errors.0 }}</p>{% endif %}
+            </div>
+
+            <!-- Active Checkbox -->
+            <div class="flex items-center space-x-3 pt-2">
+                <div class="relative flex items-center">
+                    {{ form.is_active }}
+                </div>
+                <label for="id_is_active" class="text-sm font-bold text-slate-600 cursor-pointer">
+                    Active (can log in and access the system)
+                </label>
+            </div>
+
+            <!-- Actions -->
+            <div class="pt-8 border-t border-slate-100 flex justify-end space-x-4">
+                <a href="{% url 'accounts:user_list' %}" class="px-8 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 font-bold hover:bg-slate-50 transition shadow-sm">
+                    Cancel
+                </a>
+                <button type="submit" class="px-8 py-3 bg-[#107c41] text-white rounded-xl font-bold flex items-center shadow-lg hover:bg-[#0d6b38] transition transform active:scale-95">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    Register Employee
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Styling to match the provided high-end UI image */
+    .form-input-premium {
+        width: 100%;
+        background-color: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.875rem 1.25rem;
+        font-weight: 500;
+        color: #1e293b;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        outline: none;
+    }
+    .form-input-premium:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
+    }
+    .form-input-premium::placeholder {
+        color: #94a3b8;
+    }
+
+    .form-select-premium {
+        width: 100%;
+        background-color: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.875rem 1.25rem;
+        font-weight: 500;
+        color: #1e293b;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.25rem;
+        outline: none;
+    }
+    .form-select-premium:focus {
+        border-color: #3b82f6;
+    }
+
+    /* Custom Checkbox Style matching the purple from image */
+    input[type="checkbox"] {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 0.375rem;
+        border: 2px solid #9333ea;
+        cursor: pointer;
+        appearance: none;
+        display: inline-block;
+        vertical-align: middle;
+        background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: all 0.2s;
+    }
+    input[type="checkbox"]:checked {
+        background-color: #9333ea;
+        border-color: #9333ea;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    /* Clean up default Django help text which is too long for this design */
+    .helptext { display: none; }
+</style>
+{% endblock %}

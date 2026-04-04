@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-7xl mx-auto p-6">
+    <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <h1 class="text-3xl font-bold text-gray-800">Unpaid Billed Orders</h1>
+    </div>
+
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-md shadow-sm {% if message.tags == 'success' %}bg-green-50 text-green-800 border-l-4 border-green-500{% else %}bg-blue-50 text-blue-800 border-l-4 border-blue-500{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for order in orders %}
+        <div class="bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-md border border-yellow-200 p-5 flex flex-col justify-between hover:shadow-lg transition">
+            <div>
+                <div class="flex justify-between items-start mb-3">
+                    <span class="font-bold text-xl text-gray-800 font-mono">{{ order.receipt_number }}</span>
+                    <span class="bg-yellow-100 text-yellow-800 border border-yellow-300 text-xs px-2 py-1 rounded font-bold tracking-wide">BILLED</span>
+                </div>
+                <div class="text-sm text-gray-500 font-medium mb-4 space-y-1">
+                    <p class="flex justify-between"><span>Waiter:</span> <span class="text-gray-900">{{ order.waiter.username }}</span></p>
+                    <p class="flex justify-between"><span>Time:</span> <span class="text-gray-900">{{ order.created_at|time:"H:i A" }}</span></p>
+                    {% if order.table_number %}<p class="flex justify-between"><span>Table:</span> <span class="text-gray-900">{{ order.table_number }}</span></p>{% endif %}
+                </div>
+                <div class="border-t border-yellow-200 py-4 mb-2">
+                    <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Total Due</p>
+                    <p class="text-3xl font-extrabold text-gray-900">${{ order.total_amount }}</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a href="{% url 'payments:confirm_payment' order.id %}" class="flex-1 bg-green-500 text-white text-center py-2.5 rounded hover:bg-green-600 font-bold shadow-sm transition">Collect Pay</a>
+                <form action="{% url 'payments:cancel_order' order.id %}" method="POST" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 px-3 py-2.5 rounded font-bold transition h-full" onclick="return confirm('Are you sure you want to cancel receipt {{ order.receipt_number }}?')">Cancel</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full">
+            <div class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100 text-gray-500">
+                <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h3 class="text-xl font-bold text-gray-800">No unpaid orders</h3>
+                <p class="mt-2 text-gray-500">Great job! All customers have settled their bills.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
