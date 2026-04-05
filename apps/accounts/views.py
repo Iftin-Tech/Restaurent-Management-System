@@ -1,9 +1,24 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
 from .permissions import requires_permission
 from .models import User
+from apps.core.tenant import get_current_tenant
+
+
+def _resolve_dashboard_route(user):
+    if user.is_superuser:
+        return 'dashboard:index'
+
+    roles = set(user.roles.values_list('role__name', flat=True))
+    if 'manager' in roles:
+        return 'dashboard:manager'
+    if 'cashier' in roles:
+        return 'dashboard:cashier'
+    if 'waiter' in roles:
+        return 'dashboard:waiter'
+    return 'dashboard:index'
 
 def login_view(request):
     if request.method == 'POST':
@@ -11,8 +26,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            # Will redirect to dashboard once dashboard app is connected
-            return redirect('/') 
+            return redirect(_resolve_dashboard_route(user))
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
@@ -25,8 +39,6 @@ def logout_view(request):
 def user_list(request):
     users = User.objects.all()
     return render(request, 'accounts/user_list.html', {'users': users})
-
-from apps.core.tenant import get_current_tenant
 
 @requires_permission('manage_users')
 def user_create(request):

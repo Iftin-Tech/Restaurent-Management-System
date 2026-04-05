@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="px-6 py-6 max-w-7xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-gray-800">Cashier Dashboard</h1>
+        <p class="text-gray-500 mt-1 font-medium">Track pending bills and your daily collections.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-yellow-50 to-white p-8 rounded-2xl shadow-sm border border-yellow-200">
+            <h3 class="text-yellow-800 text-sm font-bold uppercase tracking-widest mb-4 flex justify-between items-center">
+                <span>Unpaid Billed Orders</span>
+                <span class="bg-yellow-200 px-3 py-1 rounded-full text-yellow-900 shadow-sm">{{ unpaid_count }} Orders</span>
+            </h3>
+            {% if unpaid_count > 0 %}
+            <a href="{% url 'payments:unpaid_orders' %}" class="mt-2 inline-block bg-yellow-600 text-white px-6 py-3 rounded-lg font-bold shadow hover:bg-yellow-700 transition">Open Payments Queue &rarr;</a>
+            {% else %}
+            <p class="text-gray-500 font-medium">All bills are settled right now.</p>
+            {% endif %}
+        </div>
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-green-100">
+            <h3 class="text-gray-400 text-sm font-black uppercase tracking-widest mb-2">My Collections Today</h3>
+            <p class="text-5xl font-extrabold text-green-500">${{ my_collected_today }}</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-8 py-5 border-b border-gray-100 bg-gray-50">
+            <h3 class="text-xl font-bold text-gray-700">Recent Payments</h3>
+        </div>
+        <div class="p-8">
+            {% if recent_payments %}
+            <div class="space-y-3">
+                {% for payment in recent_payments %}
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between border border-gray-100 rounded-xl px-4 py-3">
+                    <div>
+                        <p class="font-bold text-gray-800">Receipt {{ payment.order.receipt_number }}</p>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">{{ payment.get_method_display }} • {{ payment.confirmed_at|date:"M d, Y H:i" }}</p>
+                    </div>
+                    <p class="text-lg font-extrabold text-green-600 mt-2 md:mt-0">${{ payment.amount_paid }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 font-medium">No payments have been recorded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

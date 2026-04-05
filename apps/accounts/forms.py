@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Case, IntegerField, Value, When
 from .models import User, Role, UserRole
 
 class CustomUserCreationForm(forms.ModelForm):
@@ -32,9 +33,24 @@ class CustomUserCreationForm(forms.ModelForm):
         fields = ('full_name', 'username', 'email', 'phone_number', 'password', 'is_active')
 
     def __init__(self, *args, **kwargs):
-        using_db = kwargs.pop('using_db', 'default')
+        self.using_db = kwargs.pop('using_db', 'default')
         super().__init__(*args, **kwargs)
-        self.fields['role'].queryset = Role.objects.using(using_db).all()
+        self._ensure_default_roles()
+
+        role_order = [choice[0] for choice in Role.ROLE_CHOICES]
+        ordering = Case(
+            *[When(name=role_name, then=Value(index)) for index, role_name in enumerate(role_order)],
+            output_field=IntegerField(),
+        )
+        self.fields['role'].queryset = (
+            Role.objects.using(self.using_db)
+            .filter(name__in=role_order)
+            .order_by(ordering)
+        )
+
+    def _ensure_default_roles(self):
+        for role_name, _ in Role.ROLE_CHOICES:
+            Role.objects.using(self.using_db).get_or_create(name=role_name)
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -45,9 +61,9 @@ class CustomUserCreationForm(forms.ModelForm):
         user.is_active = self.cleaned_data['is_active']
         
         if commit:
-            user.save()
+            user.save(using=self.using_db)
             # Clear old and apply SINGLE selected role
-            UserRole.objects.filter(user=user).delete()
+            UserRole.objects.using(self.using_db).filter(user=user).delete()
             selected_role = self.cleaned_data['role']
-            UserRole.objects.create(user=user, role=selected_role)
+            UserRole.objects.using(self.using_db).create(user=user, role=selected_role)
         return user
