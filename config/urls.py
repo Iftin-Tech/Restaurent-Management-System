@@ -2,9 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('superadmin/', admin.site.urls), # Using /superadmin to avoid /admin subdomain clash
+    path('admin/', RedirectView.as_view(url='/superadmin/', permanent=False)),
+    path('superadmin/', admin.site.urls), # Keep legacy alias
     path('accounts/', include('apps.accounts.urls')),
     path('menu/', include('apps.menu.urls')),
     path('dashboard/', include('apps.dashboard.urls')),
