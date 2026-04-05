@@ -81,7 +81,7 @@
                 <div class="pb-2 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-4 opacity-50">Operation Hub</div>
             {% endif %}
 
-            <a href="/" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if request.path == '/' %}nav-link-active{% endif %}">
+            <a href="{% url 'dashboard:index' %}" class="flex items-center px-4 py-3 text-sm font-bold text-slate-400 rounded-xl hover:bg-white/5 hover:text-white transition group {% if request.path == '/' or '/dashboard/' in request.path %}nav-link-active{% endif %}">
                 <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 Dashboard
             </a>
