@@ -1,48 +1,48 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="flex h-full overflow-hidden bg-gray-100">
+<div class="flex flex-col lg:flex-row h-full lg:overflow-hidden bg-gray-100">
     <!-- Left: Menu Grid -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex-col overflow-hidden flex">
         <!-- Top bar: Categories & Search -->
-        <header class="bg-white border-b border-gray-200 p-4 shrink-0 shadow-sm z-10 flex space-x-4 items-center overflow-x-auto custom-scrollbar">
-            <button onclick="filterCategory('all')" class="bg-indigo-600 text-white px-6 py-2 rounded-full font-black text-sm whitespace-nowrap shadow-md category-btn active">All Items</button>
+        <header class="bg-white border-b border-gray-200 p-2 lg:p-4 shrink-0 shadow-sm z-10 flex flex-col sm:flex-row gap-2 sm:space-x-2 sm:space-y-0 items-center overflow-x-auto custom-scrollbar">
+            <button onclick="filterCategory('all')" class="bg-indigo-600 text-white px-4 lg:px-6 py-2 rounded-full font-black text-xs lg:text-sm whitespace-nowrap shadow-md category-btn active">All Items</button>
             {% for cat in categories %}
-            <button onclick="filterCategory('{{ cat.id }}')" class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-6 py-2 rounded-full font-black text-sm whitespace-nowrap transition category-btn" data-cat-id="{{ cat.id }}">{{ cat.name }}</button>
+            <button onclick="filterCategory('{{ cat.id }}')" class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 lg:px-6 py-2 rounded-full font-black text-xs lg:text-sm whitespace-nowrap transition category-btn" data-cat-id="{{ cat.id }}">{{ cat.name }}</button>
             {% endfor %}
-            <div class="flex-1"></div>
-            <div class="relative w-64">
-                <input type="text" id="menuSearch" onkeyup="searchMenu()" placeholder="Find a dish..." class="w-full border-2 border-gray-100 rounded-xl px-4 py-2 pl-10 focus:border-indigo-500 outline-none transition font-bold text-sm">
-                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <div class="flex-1 hidden sm:block"></div>
+            <div class="relative w-full sm:w-48 lg:w-64">
+                <input type="text" id="menuSearch" onkeyup="searchMenu()" placeholder="Find a dish..." class="w-full border-2 border-gray-100 rounded-xl px-3 lg:px-4 py-2 pl-8 lg:pl-10 focus:border-indigo-500 outline-none transition font-bold text-xs lg:text-sm">
+                <svg class="w-4 h-4 text-gray-400 absolute left-2 lg:left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </div>
         </header>
 
         <!-- Menu Grid -->
-        <main class="flex-1 overflow-y-auto p-6 scroll-smooth custom-scrollbar">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5" id="menuGrid">
+        <main class="flex-1 overflow-y-auto p-2 lg:p-6 scroll-smooth custom-scrollbar">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 lg:gap-5" id="menuGrid">
                 {% for cat in categories %}
                     {% for item in cat.items.all %}
                         {% if item.is_active %}
-                        <div class="menu-card category-{{ cat.id }} bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-indigo-400 group relative" 
+                        <div class="menu-card category-{{ cat.id }} bg-white rounded-2xl lg:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-1 lg:hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-indigo-400 group relative" 
                              onclick="addToCart(event, {{ item.id }}, '{{ item.name|escapejs }}', '{{ item.price }}', '{% if item.image %}{{ item.image.url|escapejs }}{% endif %}')">
-                            
-                            <div class="relative h-44 w-full overflow-hidden">
+                             
+                            <div class="relative h-28 lg:h-44 w-full overflow-hidden">
                                 {% if item.image %}
                                 <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
                                 {% else %}
                                 <div class="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-400">
-                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <svg class="w-8 lg:w-12 h-8 lg:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 </div>
                                 {% endif %}
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
-                                    <span class="opacity-0 group-hover:opacity-100 bg-white text-indigo-600 font-black px-4 py-2 rounded-xl scale-75 group-hover:scale-100 transition shadow-xl">ADD TO BILL</span>
+                                    <span class="opacity-0 group-hover:opacity-100 bg-white text-indigo-600 font-black px-2 lg:px-4 py-1 lg:py-2 rounded-lg lg:rounded-xl scale-75 lg:scale-90 group-hover:scale-100 transition shadow-xl text-xs lg:text-sm">ADD</span>
                                 </div>
                             </div>
                             
-                            <div class="p-4">
-                                <h3 class="font-extrabold text-gray-800 text-lg leading-tight truncate">{{ item.name }}</h3>
-                                <div class="flex justify-between items-center mt-2">
-                                    <span class="text-xs font-black text-indigo-500 uppercase tracking-widest">{{ cat.name }}</span>
-                                    <span class="text-xl font-black text-gray-900">${{ item.price }}</span>
+                            <div class="p-2 lg:p-4">
+                                <h3 class="font-extrabold text-gray-800 text-xs lg:text-lg leading-tight truncate">{{ item.name }}</h3>
+                                <div class="flex justify-between items-center mt-1 lg:mt-2">
+                                    <span class="text-[8px] lg:text-xs font-black text-indigo-500 uppercase tracking-widest">{{ cat.name }}</span>
+                                    <span class="text-sm lg:text-xl font-black text-gray-900">${{ item.price }}</span>
                                 </div>
                             </div>
                         </div>
@@ -54,70 +54,96 @@
     </div>
 
     <!-- Right Side: Interactive Cart / Digital Receipt -->
-    <aside class="w-[320px] lg:w-[350px] xl:w-[370px] bg-white border-l border-gray-200 flex flex-col shadow-2xl z-20">
+    <aside class="w-full lg:w-[320px] xl:w-[370px] bg-white border-l border-gray-200 flex flex-col shadow-2xl z-20 fixed lg:relative inset-0 lg:inset-auto">
+        <!-- Mobile Header with Toggle -->
+        <div class="lg:hidden flex items-center justify-between p-3 bg-indigo-600 text-white">
+            <span class="font-black">Current Bill</span>
+            <button onclick="toggleMobileCart()" class="p-2 bg-white/20 rounded-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
         <!-- Receipt Header -->
-        <div class="px-6 py-6 border-b-2 border-dashed border-gray-100 bg-gray-50 bg-opacity-50">
+        <div class="px-4 lg:px-6 py-4 lg:py-6 border-b-2 border-dashed border-gray-100 bg-gray-50">
             <div class="flex justify-between items-start">
                 <div>
-                    <h2 class="text-3xl font-black text-gray-900 tracking-tighter uppercase">Order & Bill</h2>
-                    <p class="text-gray-400 font-bold text-xs uppercase tracking-widest mt-1">Waiter: {{ request.user.username }}</p>
+                    <h2 class="text-xl lg:text-3xl font-black text-gray-900 tracking-tighter uppercase">Order & Bill</h2>
+                    <p class="text-gray-400 font-bold text-[10px] lg:text-xs uppercase tracking-widest mt-1">Waiter: {{ request.user.username }}</p>
                 </div>
-                <div class="text-right">
-                    <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-indigo-200" id="tableBadge">UNASSIGNED</span>
+                <div class="text-right hidden lg:block">
+                    <span class="bg-indigo-100 text-indigo-700 px-2 lg:px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider border border-indigo-200" id="tableBadge">UNASSIGNED</span>
                 </div>
             </div>
             
-            <div class="mt-6 flex gap-2">
-                <input type="text" id="tableNumber" placeholder="TBL #" class="w-20 border-2 border-gray-200 rounded-xl px-2 py-2 text-center font-black focus:border-indigo-500 outline-none transition text-sm">
-                <button onclick="clearCart()" class="flex-1 bg-red-50 text-red-600 font-black text-xs py-2 rounded-xl border border-red-100 hover:bg-red-600 hover:text-white transition uppercase tracking-widest">
-                    Clear Cart
+            <div class="mt-3 lg:mt-6 flex gap-2">
+                <input type="text" id="tableNumber" placeholder="TBL #" class="w-16 lg:w-20 border-2 border-gray-200 rounded-xl px-2 py-2 text-center font-black focus:border-indigo-500 outline-none transition text-sm">
+                <button onclick="clearCart()" class="flex-1 bg-red-50 text-red-600 font-black text-[10px] lg:text-xs py-2 rounded-xl border border-red-100 hover:bg-red-600 hover:text-white transition uppercase tracking-widest">
+                    Clear
                 </button>
             </div>
         </div>
 
         <!-- Receipt Content (Items) -->
-        <div class="flex-1 overflow-y-auto px-6 py-5 custom-scrollbar space-y-3" id="cartContent">
-            <!-- Dynamic Cart Items go here -->
-            <div class="flex flex-col items-center justify-center py-20 text-gray-300 select-none opacity-50" id="cartEmptyState">
-                <svg class="w-20 h-20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                <p class="font-black italic uppercase tracking-tighter text-xl">Current Bill is Empty</p>
+        <div class="flex-1 overflow-y-auto px-3 lg:px-6 py-3 lg:py-5 custom-scrollbar space-y-2 lg:space-y-3" id="cartContent">
+            <div class="flex flex-col items-center justify-center py-10 lg:py-20 text-gray-300 select-none opacity-50" id="cartEmptyState">
+                <svg class="w-12 lg:w-20 h-12 lg:h-20 mb-2 lg:4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                <p class="font-black italic uppercase tracking-tighter text-sm lg:text-xl">Empty Bill</p>
             </div>
         </div>
 
         <!-- Receipt Footer: Totals & Action -->
-        <div class="p-6 border-t-2 border-dashed border-gray-100 shadow-inner bg-gray-50">
-            <div class="space-y-3 mb-8">
-                <div class="flex justify-between text-gray-500 font-bold">
+        <div class="p-3 lg:p-6 border-t-2 border-dashed border-gray-100 shadow-inner bg-gray-50">
+            <div class="space-y-2 lg:space-y-3 mb-4 lg:mb-8">
+                <div class="flex justify-between text-gray-500 font-bold text-sm">
                     <span>Subtotal</span>
                     <span id="subtotalDisplay">$0.00</span>
                 </div>
-                <div class="flex justify-between text-gray-500 font-bold border-b border-gray-200 pb-3">
-                    <span>Service Tax (0%)</span>
+                <div class="flex justify-between text-gray-500 font-bold text-sm border-b border-gray-200 pb-2 lg:pb-3">
+                    <span>Tax (0%)</span>
                     <span>$0.00</span>
                 </div>
-                <div class="flex justify-between text-gray-900 font-black text-3xl tracking-tighter">
+                <div class="flex justify-between text-gray-900 font-black text-xl lg:text-3xl tracking-tighter">
                     <span>Total</span>
                     <span id="totalDisplay" class="text-indigo-600">$0.00</span>
                 </div>
             </div>
 
-            <button id="orderBtn" onclick="submitOrder()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-2xl font-black py-5 rounded-3xl shadow-xl flex items-center justify-center transition transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button id="orderBtn" onclick="submitOrder()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-lg lg:text-2xl font-black py-3 lg:py-5 rounded-2xl lg:rounded-3xl shadow-xl flex items-center justify-center transition transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                 <span>ORDER & PRINT</span>
-                <svg class="w-6 h-6 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 00-2 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                <svg class="w-5 lg:h-6 h-5 ml-2 lg:ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             </button>
         </div>
     </aside>
 </div>
 
+<!-- Mobile Cart Toggle Button (floating) -->
+<button onclick="toggleMobileCart()" class="lg:hidden fixed bottom-4 right-4 bg-indigo-600 text-white p-4 rounded-full shadow-xl z-30">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+    <span id="cartBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-black">0</span>
+</button>
+
 <script>
     let cart = [];
+    let mobileCartOpen = false;
     const csrfToken = '{{ csrf_token }}';
     const EMPTY_STATE_HTML = `
-        <div class="flex flex-col items-center justify-center py-20 text-gray-300 select-none opacity-50" id="cartEmptyState">
-            <svg class="w-20 h-20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-            <p class="font-black italic uppercase tracking-tighter text-xl">Current Bill is Empty</p>
+        <div class="flex flex-col items-center justify-center py-10 lg:py-20 text-gray-300 select-none opacity-50" id="cartEmptyState">
+            <svg class="w-12 lg:w-20 h-12 lg:h-20 mb-2 lg:4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+            <p class="font-black italic uppercase tracking-tighter text-sm lg:text-xl">Empty Bill</p>
         </div>
     `;
+
+    function toggleMobileCart() {
+        const aside = document.querySelector('aside.fixed');
+        mobileCartOpen = !mobileCartOpen;
+        if (mobileCartOpen) {
+            aside.classList.remove('translate-y-full');
+            aside.classList.add('translate-y-0');
+        } else {
+            aside.classList.add('translate-y-full');
+            aside.classList.remove('translate-y-0');
+        }
+    }
 
     function addToCart(evt, id, name, price, img) {
         const itemId = Number(id);
@@ -129,7 +155,6 @@
         }
         updateCartUI();
         
-        // Haptic feel - visual bounce
         if (evt && evt.currentTarget) {
             const btn = evt.currentTarget;
             btn.classList.add('scale-95');
@@ -163,6 +188,9 @@
     function updateCartUI() {
         const container = document.getElementById('cartContent');
         const orderBtn = document.getElementById('orderBtn');
+        const badge = document.getElementById('cartBadge');
+        
+        badge.innerText = cart.reduce((sum, i) => sum + i.quantity, 0);
         
         if (cart.length === 0) {
             container.innerHTML = EMPTY_STATE_HTML;
@@ -181,22 +209,20 @@
             total += sub;
             
             const div = document.createElement('div');
-            div.className = 'flex items-center bg-white p-4 rounded-2xl border border-gray-100 shadow-sm transition hover:shadow-md animate-fade-in group';
+            div.className = 'flex items-center bg-white p-2 lg:p-4 rounded-xl lg:rounded-2xl border border-gray-100 shadow-sm transition hover:shadow-md animate-fade-in group';
             div.innerHTML = `
-                <div class="w-14 h-14 rounded-xl bg-gray-50 shrink-0 overflow-hidden border border-gray-100 mr-4">
-                    ${item.image ? `<img src="${item.image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-gray-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>`}
+                <div class="w-10 lg:w-14 h-10 lg:h-14 rounded-lg lg:rounded-xl bg-gray-50 shrink-0 overflow-hidden border border-gray-100 mr-2 lg:mr-4">
+                    ${item.image ? `<img src="${item.image}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-gray-300"><svg class="w-4 lg:w-6 h-4 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>`}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="font-black text-gray-800 text-sm truncate uppercase tracking-tight">${item.name}</h4>
-                    <p class="text-xs font-black text-indigo-500">$${item.price.toFixed(2)}</p>
+                    <h4 class="font-black text-gray-800 text-xs lg:text-sm truncate uppercase tracking-tight">${item.name}</h4>
+                    <p class="text-[10px] lg:text-xs font-black text-indigo-500">$${item.price.toFixed(2)}</p>
                 </div>
-                <button onclick="removeFromCart(${item.id})" class="w-8 h-8 mr-2 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition text-lg leading-none font-black" title="Remove item">
-                    &times;
-                </button>
-                <div class="flex items-center bg-gray-50 rounded-xl p-1 border border-gray-200">
-                    <button onclick="updateQuantity(${item.id}, -1)" class="w-8 h-8 flex items-center justify-center bg-white text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition shadow-sm font-black text-xl leading-none">&minus;</button>
-                    <span class="w-10 text-center font-black text-gray-800 text-sm">${item.quantity}</span>
-                    <button onclick="updateQuantity(${item.id}, 1)" class="w-8 h-8 flex items-center justify-center bg-white text-green-500 rounded-lg hover:bg-green-500 hover:text-white transition shadow-sm font-black text-xl leading-none">&plus;</button>
+                <button onclick="removeFromCart(${item.id})" class="w-6 lg:w-8 h-6 lg:h-8 mr-1 lg:mr-2 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition text-lg leading-none font-black">&times;</button>
+                <div class="flex items-center bg-gray-50 rounded-lg lg:rounded-xl p-0.5 lg:p-1 border border-gray-200">
+                    <button onclick="updateQuantity(${item.id}, -1)" class="w-6 lg:w-8 h-6 lg:h-8 flex items-center justify-center bg-white text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition shadow-sm font-black text-lg leading-none">&minus;</button>
+                    <span class="w-6 lg:w-10 text-center font-black text-gray-800 text-xs lg:text-sm">${item.quantity}</span>
+                    <button onclick="updateQuantity(${item.id}, 1)" class="w-6 lg:w-8 h-6 lg:h-8 flex items-center justify-center bg-white text-green-500 rounded-lg hover:bg-green-500 hover:text-white transition shadow-sm font-black text-lg leading-none">&plus;</button>
                 </div>
             `;
             container.appendChild(div);
@@ -211,7 +237,7 @@
         const btn = document.getElementById('orderBtn');
         const originalHtml = btn.innerHTML;
         
-        btn.innerHTML = '<span class="animate-pulse">PROCESSING BILL...</span>';
+        btn.innerHTML = '<span class="animate-pulse">PROCESSING...</span>';
         btn.disabled = true;
 
         try {
@@ -229,7 +255,6 @@
 
             const result = await response.json();
             if (result.success) {
-                // Success! Open receipt for printing
                 window.location.href = result.redirect_url;
             } else {
                 alert('Error: ' + (result.error || 'Check item availability.'));
@@ -237,7 +262,7 @@
                 btn.disabled = false;
             }
         } catch (e) {
-            alert('Cloud Communication Error: Please check internet.');
+            alert('Error: Please check internet.');
             btn.innerHTML = originalHtml;
             btn.disabled = false;
         }
@@ -253,7 +278,6 @@
     }
 
     function filterCategory(catId) {
-        // Update button styles
         document.querySelectorAll('.category-btn').forEach(btn => {
             btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
             btn.classList.add('bg-gray-100', 'text-gray-700');
@@ -275,7 +299,6 @@
         });
     }
 
-    // Sync table number to badge
     document.getElementById('tableNumber').addEventListener('input', (e) => {
         document.getElementById('tableBadge').innerText = e.target.value.trim() ? 'TABLE ' + e.target.value : 'UNASSIGNED';
     });
@@ -287,8 +310,7 @@
         to { opacity: 1; transform: translateY(0); }
     }
     .animate-fade-in { animation: fade-in 0.3s ease forwards; }
-    
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }

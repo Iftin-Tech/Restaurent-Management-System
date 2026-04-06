@@ -1,0 +1,22 @@
+<div class="p-4 lg:p-8 flex items-center mb-2">
+    {% if request.tenant and request.tenant.logo %}
+        <img src="{{ request.tenant.logo.url }}" class="w-10 lg:w-12 h-10 lg:h-12 rounded-xl lg:rounded-2xl mr-3 lg:mr-4 object-cover premium-glow border-2 border-white/10" alt="Logo">
+    {% else %}
+        <div class="w-10 lg:w-12 h-10 lg:h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl lg:rounded-2xl mr-3 lg:mr-4 flex items-center justify-center text-white font-black text-lg lg:text-xl shadow-2xl">R</div>
+    {% endif %}
+    <div class="overflow-hidden">
+        {% if request.user.is_superuser %}
+            <h1 class="text-white font-black tracking-tighter text-xl lg:text-2xl truncate leading-none uppercase italic font-['Lora']">Platform Command</h1>
+            <div class="flex items-center mt-1 overflow-hidden">
+                <span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2 animate-pulse shrink-0"></span>
+                <span class="text-amber-400 font-bold text-[10px] uppercase tracking-widest truncate">Root Infrastructure</span>
+            </div>
+        {% else %}
+            <h1 class="text-white font-black tracking-tighter text-xl lg:text-2xl truncate leading-none uppercase font-['Lora']">{{ request.tenant.name|default:"POS SAAS" }}</h1>
+            <div class="flex items-center mt-1 overflow-hidden">
+                <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-2 animate-pulse shrink-0"></span>
+                <span class="text-slate-400 font-bold text-[10px] uppercase tracking-widest truncate">{{ request.tenant.db_name }}</span>
+            </div>
+        {% endif %}
+    </div>
+</div>

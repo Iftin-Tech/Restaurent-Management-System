@@ -1,0 +1,23 @@
+<div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="px-4 lg:px-8 py-4 lg:py-5 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
+        <h3 class="text-lg font-black text-gray-800">Recently Onboarded</h3>
+        <a href="{% url 'platform_admin:restaurant_list' %}" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 transition">View All &rarr;</a>
+    </div>
+    <ul class="divide-y divide-gray-100">
+        {% for rest in recent_restaurants %}
+        <li class="px-4 lg:px-8 py-4 hover:bg-gray-50 transition flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+            <div>
+                <p class="font-bold text-gray-800 text-lg">{{ rest.name }}</p>
+                <p class="text-xs font-mono text-gray-500 mt-1">Tenant Subdomain: <span class="text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded">{{ rest.subdomain }}</span></p>
+            </div>
+            {% if rest.is_active %}
+            <span class="bg-green-100 text-green-700 font-bold text-xs uppercase tracking-wide px-3 py-1 rounded-full border border-green-200 shadow-sm">Active</span>
+            {% else %}
+            <span class="bg-red-100 text-red-700 font-bold text-xs uppercase tracking-wide px-3 py-1 rounded-full border border-red-200 shadow-sm">Inactive</span>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li class="px-4 lg:px-8 py-8 text-center text-gray-400 font-medium">No clients registered yet.</li>
+        {% endfor %}
+    </ul>
+</div>

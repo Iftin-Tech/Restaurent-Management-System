@@ -13,7 +13,7 @@
             .no-print { display: none !important; }
             @page { 
                 margin: 0; 
-                size: 80mm auto; /* Standard thermal printer width */
+                size: 80mm auto;
             }
             #receipt { 
                 box-shadow: none !important; 
@@ -35,24 +35,23 @@
         .text-mono { font-family: 'Courier Prime', monospace; }
     </style>
 </head>
-<body class="bg-gray-200 py-10">
+<body class="bg-gray-200 py-4 lg:py-10">
     
-    <div class="fixed top-5 left-1/2 -translate-x-1/2 no-print flex items-center gap-3 mb-10">
-        <a href="{% url 'orders:order_create' %}" class="bg-slate-800 text-white px-7 py-3 rounded-full font-black text-lg shadow-xl hover:bg-slate-900 transition">
-            Back
+    <div class="fixed top-3 lg:top-5 left-1/2 -translate-x-1/2 no-print flex items-center gap-2 lg:gap-3 z-50">
+        <a href="{% url 'orders:order_create' %}" class="bg-slate-800 text-white px-4 lg:px-7 py-2 lg:py-3 rounded-full font-bold lg:text-lg shadow-xl hover:bg-slate-900 transition">
+            ← Back
         </a>
-        <button onclick="window.print()" class="bg-indigo-600 text-white px-7 py-3 rounded-full font-black text-lg shadow-xl hover:bg-indigo-700 transition">
+        <button onclick="window.print()" class="bg-indigo-600 text-white px-4 lg:px-7 py-2 lg:py-3 rounded-full font-bold lg:text-lg shadow-xl hover:bg-indigo-700 transition">
             Print
         </button>
     </div>
 
-    <div id="receipt" class="shadow-2xl border border-gray-300">
-        <!-- Logo / Name -->
+    <div id="receipt" class="shadow-2xl border border-gray-300 mx-2 lg:mx-auto mt-14 lg:mt-10">
         <div class="text-center">
             {% if request.tenant and request.tenant.logo %}
-                <img src="{{ request.tenant.logo.url }}" alt="Logo" class="w-20 h-20 object-contain mx-auto mb-2 grayscale">
+                <img src="{{ request.tenant.logo.url }}" alt="Logo" class="w-16 lg:w-20 h-16 lg:h-20 object-contain mx-auto mb-2 grayscale">
             {% endif %}
-            <h1 class="text-xl font-bold uppercase tracking-widest leading-tight">
+            <h1 class="text-lg lg:text-xl font-bold uppercase tracking-widest leading-tight">
                 {{ request.tenant.name|default:"Restaurant Platform" }}
             </h1>
             <p class="text-[10px] italic">Automated Billing System</p>
@@ -60,7 +59,6 @@
 
         <div class="divider"></div>
 
-        <!-- Meta Info -->
         <div class="text-[11px] font-bold">
             <div class="flex justify-between">
                 <span>RECEIPT #:</span>
@@ -84,7 +82,6 @@
 
         <div class="divider"></div>
 
-        <!-- Items Table -->
         <table class="w-full text-xs font-bold">
             <thead class="text-[10px]">
                 <tr class="text-left border-b border-black">
@@ -97,7 +94,7 @@
             <tbody>
                 {% for item in order.items.all %}
                 <tr>
-                    <td class="py-2 leading-tight uppercase font-black overflow-hidden truncate max-w-[80px]">{{ item.menu_item.name }}</td>
+                    <td class="py-2 leading-tight uppercase font-black overflow-hidden truncate max-w-[60px] lg:max-w-[80px]">{{ item.menu_item.name }}</td>
                     <td class="py-2 text-right">{{ item.quantity }}</td>
                     <td class="py-2 text-right">${{ item.unit_price }}</td>
                     <td class="py-2 text-right font-black border-l border-gray-100 pl-1">${{ item.subtotal }}</td>
@@ -108,7 +105,6 @@
 
         <div class="divider"></div>
 
-        <!-- Total -->
         <div class="space-y-1">
             <div class="flex justify-between font-bold text-xs uppercase">
                 <span>SUBTOTAL:</span>
@@ -120,16 +116,14 @@
             </div>
             <div class="flex justify-between font-black text-lg border-t border-black pt-2 uppercase tracking-tighter">
                 <span>TOTAL:</span>
-                <span>${{ order.total_amount }}</span>
+                <span>$${{ order.total_amount }}</span>
             </div>
         </div>
 
         <div class="divider"></div>
 
-        <!-- Footer Footer -->
         <div class="text-center space-y-2 mt-4 select-none">
             <div class="flex justify-center space-x-1 grayscale opacity-50">
-               <!-- Barcode simulation -->
                <div class="w-0.5 h-6 bg-black"></div><div class="w-1 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-1 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-2 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div>
                <div class="w-0.5 h-6 bg-black"></div><div class="w-1 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-1 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div><div class="w-2 h-6 bg-black"></div><div class="w-0.5 h-6 bg-black"></div>
             </div>
@@ -138,7 +132,6 @@
         </div>
     </div>
 
-    <!-- Auto-print trigger -->
     <script>
         {% if 'print' in request.path %}
         window.addEventListener('load', () => {
