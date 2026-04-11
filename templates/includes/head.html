@@ -14,17 +14,92 @@
         :root {
             --primary-color: {{ request.tenant.primary_color|default:"#3b82f6" }};
             --secondary-color: {{ request.tenant.secondary_color|default:"#ec4899" }};
+            --sidebar-text: color-mix(in srgb, white 82%, var(--primary-color) 18%);
+            --sidebar-text-muted: color-mix(in srgb, white 60%, var(--primary-color) 40%);
+            --sidebar-accent: color-mix(in srgb, var(--primary-color) 78%, white 22%);
         }
         body { font-family: 'Outfit', sans-serif; height: 100vh; overflow: hidden; }
-        .custom-sidebar::-webkit-scrollbar { width: 4px; }
-        .custom-sidebar::-webkit-scrollbar-track { background: #0f172a; }
-        .custom-sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        
+        .custom-sidebar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .custom-sidebar::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        .tenant-sidebar {
+            position: relative;
+            background-color: var(--primary-color);
+            border-right: 1px solid color-mix(in srgb, var(--primary-color) 78%, black 22%);
+        }
+
+        .sidebar-mobile-toggle {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 16px 40px -24px color-mix(in srgb, var(--primary-color) 64%, black 36%);
+        }
+
+        .sidebar-link {
+            color: var(--sidebar-text-muted) !important;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link:focus-visible {
+            background: color-mix(in srgb, var(--primary-color) 18%, transparent) !important;
+            color: white !important;
+        }
+
+        .sidebar-link:hover svg,
+        .sidebar-link:focus-visible svg {
+            opacity: 1 !important;
+        }
+
         .nav-link-active { 
-            background: rgba(255, 255, 255, 0.05); 
-            border-left: 3px solid var(--primary-color);
+            background: color-mix(in srgb, white 16%, var(--primary-color) 84%);
+            border-left: 3px solid white;
             color: white !important;
             font-weight: 800 !important;
+            box-shadow: inset 0 0 0 1px color-mix(in srgb, white 10%, transparent);
+        }
+
+        .sidebar-section-label {
+            color: var(--sidebar-text-muted) !important;
+            border-color: color-mix(in srgb, var(--primary-color) 14%, white 8%) !important;
+        }
+
+        .sidebar-subnav-wrap {
+            border-color: color-mix(in srgb, var(--primary-color) 14%, white 8%) !important;
+        }
+
+        .sidebar-subnav-link {
+            color: var(--sidebar-text-muted) !important;
+            border-radius: 0.75rem;
+        }
+
+        .sidebar-subnav-link:hover {
+            color: var(--sidebar-accent) !important;
+            background: color-mix(in srgb, white 10%, var(--primary-color) 90%) !important;
+        }
+
+        .sidebar-subnav-link-active {
+            color: white !important;
+            background: color-mix(in srgb, white 16%, var(--primary-color) 84%) !important;
+            box-shadow: inset 0 0 0 1px color-mix(in srgb, white 10%, transparent);
+        }
+
+        .sidebar-logout-panel {
+            background: color-mix(in srgb, var(--primary-color) 84%, black 16%) !important;
+            border-top: 1px solid color-mix(in srgb, var(--primary-color) 14%, white 8%) !important;
+        }
+
+        .sidebar-logo-fallback {
+            background-color: color-mix(in srgb, var(--secondary-color) 24%, white 10%);
+        }
+
+        .sidebar-meta-text {
+            color: var(--sidebar-text-muted) !important;
         }
         
         .premium-glow {
