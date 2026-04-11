@@ -18,7 +18,7 @@
             --sidebar-text-muted: color-mix(in srgb, white 60%, var(--primary-color) 40%);
             --sidebar-accent: color-mix(in srgb, var(--primary-color) 78%, white 22%);
         }
-        body { font-family: 'Outfit', sans-serif; height: 100vh; overflow: hidden; }
+        body { font-family: 'Outfit', sans-serif; min-height: 100vh; overflow: hidden; }
         .custom-sidebar {
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -100,6 +100,90 @@
 
         .sidebar-meta-text {
             color: var(--sidebar-text-muted) !important;
+        }
+
+        .page-shell {
+            width: 100%;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .page-hero {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 1.5rem;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        }
+
+        .page-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 1.5rem;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        }
+
+        .table-shell {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-shell table {
+            min-width: 640px;
+        }
+
+        .datatable-shell {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .datatable-shell .dataTables_wrapper {
+            min-width: 640px;
+        }
+
+        .datatable-shell .dataTables_filter input {
+            max-width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .page-shell {
+                padding: 1.5rem;
+            }
+
+            .page-hero {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter,
+            .dataTables_wrapper .dataTables_info,
+            .dataTables_wrapper .dataTables_paginate {
+                float: none !important;
+                text-align: left !important;
+            }
+
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {
+                margin-bottom: 0.75rem;
+            }
+
+            .dataTables_wrapper .dataTables_filter input {
+                width: 100% !important;
+                margin-left: 0 !important;
+                margin-top: 0.5rem !important;
+            }
+
+            .dataTables_wrapper .dataTables_paginate {
+                margin-top: 0.75rem;
+            }
         }
         
         .premium-glow {

@@ -1,17 +1,17 @@
-<header class="h-14 lg:h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-10 shrink-0 z-10 w-full">
-    <div class="flex items-center">
+<header class="min-h-14 lg:min-h-16 bg-white border-b border-slate-200 flex items-center justify-between pl-16 pr-4 py-3 lg:px-10 shrink-0 z-10 w-full gap-3">
+    <div class="flex items-center min-w-0">
         <div class="flex flex-col">
             <span class="text-[10px] lg:text-xs font-black text-slate-400 uppercase tracking-widest leading-none">System Status</span>
-            <span class="text-slate-800 font-bold text-sm lg:text-lg mt-0.5 lg:mt-1 font-['Lora'] uppercase italic tracking-tighter">Live Intelligence</span>
+            <span class="text-slate-800 font-bold text-sm lg:text-lg mt-0.5 lg:mt-1 font-['Lora'] uppercase italic tracking-tighter truncate">Live Intelligence</span>
         </div>
     </div>
     
-    <div class="flex items-center space-x-3 lg:space-x-6">
-        <div class="flex items-center bg-slate-50 px-2 lg:px-4 py-1.5 lg:py-2 rounded-xl lg:rounded-2xl border border-slate-100">
+    <div class="flex items-center space-x-3 lg:space-x-6 min-w-0">
+        <div class="flex items-center bg-slate-50 px-2 lg:px-4 py-1.5 lg:py-2 rounded-xl lg:rounded-2xl border border-slate-100 min-w-0">
             <div class="w-6 lg:w-8 h-6 lg:h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-black text-[10px] lg:text-sm mr-2 lg:mr-3 uppercase">{{ request.user.username.0 }}</div>
-            <div class="flex flex-col">
+            <div class="flex flex-col min-w-0">
                 <span class="text-[8px] lg:text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Logged as</span>
-                <span class="text-slate-800 font-bold text-[10px] lg:text-xs">{{ request.user.username }}</span>
+                <span class="text-slate-800 font-bold text-[10px] lg:text-xs truncate">{{ request.user.username }}</span>
             </div>
         </div>
     </div>
