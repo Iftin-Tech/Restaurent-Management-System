@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="px-8 py-10 max-w-4xl mx-auto">
+<div class="page-shell max-w-4xl">
     <div class="mb-8">
         <a href="{% url 'menu:item_list' %}" class="text-sm font-black text-gray-400 hover:text-indigo-600 uppercase tracking-widest transition">&larr; Back to Catalog Items</a>
-        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight mt-3">Add Menu Product</h1>
-        <p class="text-gray-500 font-medium mt-1">Populate your restaurant's catalog with new dishes, modifiers, and beverage options.</p>
+        <h1 class="text-2xl lg:text-3xl font-extrabold text-gray-900 tracking-tight mt-3">Add Menu Product</h1>
+        <p class="text-gray-500 font-medium mt-1 text-sm lg:text-base">Populate your restaurant's catalog with new dishes, modifiers, and beverage options.</p>
     </div>
 
-    <div class="bg-white p-10 rounded-2xl shadow-xl border-t-8 transition-transform hover:scale-[1.005]"
+    <div class="bg-white p-5 sm:p-7 lg:p-10 rounded-2xl shadow-xl border-t-8 transition-transform hover:scale-[1.005]"
          {% if request.tenant %}style="border-top-color: {{ request.tenant.primary_color }};"{% else %}class="border-blue-600"{% endif %}>
         
         <form method="POST" class="space-y-6">
             {% csrf_token %}
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                 <!-- Main Details -->
                 <div class="space-y-4">
                     <div>
@@ -49,9 +49,9 @@
                 </div>
             </div>
 
-            <div class="pt-6 flex gap-4">
+            <div class="pt-6 flex flex-col-reverse sm:flex-row gap-3 lg:gap-4">
                 <a href="{% url 'menu:item_list' %}" class="flex-1 bg-white border-2 border-gray-200 text-gray-700 text-center py-4 rounded-xl hover:bg-gray-50 font-black transition">Cancel</a>
-                <button type="submit" class="flex-[3] text-white py-4 rounded-xl font-black text-lg shadow-2xl flex justify-center items-center transition transform active:scale-95"
+                <button type="submit" class="flex-[3] text-white py-4 rounded-xl font-black text-base lg:text-lg shadow-2xl flex justify-center items-center transition transform active:scale-95"
                          {% if request.tenant %}style="background-color: {{ request.tenant.primary_color }};" 
                          onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter='none'"{% else %}class="bg-blue-600 hover:bg-blue-700"{% endif %}>
                     Finalize Deployment

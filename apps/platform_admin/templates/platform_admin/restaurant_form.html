@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="px-8 py-10 max-w-5xl mx-auto h-full overflow-y-auto no-scrollbar">
-    <div class="mb-10 flex justify-between items-end">
+<div class="page-shell max-w-5xl h-full overflow-y-auto no-scrollbar">
+    <div class="mb-8 lg:mb-10 flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-end">
         <div>
             <a href="{% url 'platform_admin:restaurant_list' %}" class="text-[10px] font-black text-slate-400 hover:text-indigo-600 uppercase tracking-[0.2em] transition">&larr; Back to Command Center</a>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tighter mt-4 uppercase">{{ title }}</h1>
+            <h1 class="text-3xl lg:text-4xl font-black text-slate-900 tracking-tighter mt-4 uppercase">{{ title }}</h1>
             <p class="text-slate-500 font-bold text-sm mt-1">Configure tenant branding and automated high-performance database provisioning.</p>
         </div>
         {% if restaurant %}
-        <div class="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-2xl flex items-center">
+        <div class="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-2xl flex items-center w-fit">
             <span class="w-2 h-2 bg-indigo-600 rounded-full mr-2 animate-pulse"></span>
             <span class="text-indigo-800 font-black text-[10px] uppercase tracking-widest">Editing: {{ restaurant.subdomain }}</span>
         </div>
@@ -21,7 +21,7 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2">
                 <!-- Left: Branding & Core Identity -->
-                <div class="p-10 space-y-8 bg-slate-50/50 border-r border-slate-100">
+                <div class="p-5 sm:p-7 lg:p-10 space-y-8 bg-slate-50/50 lg:border-r border-slate-100">
                     <div class="flex items-center space-x-3 mb-4">
                         <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black">1</div>
                         <h3 class="text-xs font-black text-indigo-900 uppercase tracking-[0.2em]">Client Identity & Branding</h3>
@@ -44,7 +44,7 @@
                             {% if form.subdomain.errors %}<p class="text-rose-500 text-[10px] mt-2 font-black uppercase tracking-tight">{{ form.subdomain.errors.0|upper }}</p>{% endif %}
                         </div>
 
-                        <div class="grid grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase tracking-widest">Identity Color</label>
                                 <div class="relative h-12 w-full rounded-xl overflow-hidden shadow-inner border-2 border-slate-100">
@@ -68,7 +68,7 @@
                 </div>
 
                 <!-- Right: Infrastructure & Provisioning -->
-                <div class="p-10 space-y-8 bg-white">
+                <div class="p-5 sm:p-7 lg:p-10 space-y-8 bg-white">
                     <div class="flex items-center space-x-3 mb-4">
                         <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-black">2</div>
                         <h3 class="text-xs font-black text-emerald-900 uppercase tracking-[0.2em]">Automated Enterprise Engine</h3>
@@ -109,7 +109,7 @@
             </div>
 
             <!-- Global Control -->
-            <div class="p-10 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
+            <div class="p-5 sm:p-7 lg:p-10 border-t border-slate-100 bg-slate-50/30 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div class="flex items-center bg-white p-4 rounded-3xl border border-slate-200 shadow-inner">
                     <div class="flex items-center h-6 w-12 mr-4 bg-slate-100 rounded-full p-1 relative border border-slate-200">
                         {{ form.is_active }}
@@ -121,9 +121,9 @@
                     </div>
                 </div>
 
-                <div class="flex space-x-4">
-                    <a href="{% url 'platform_admin:restaurant_list' %}" class="bg-white text-slate-500 px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest border border-slate-200 hover:bg-slate-50 transition">Abort</a>
-                    <button type="submit" class="bg-indigo-600 text-white px-12 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-700 shadow-2xl shadow-indigo-900/40 transition transform active:scale-95">
+                <div class="flex w-full lg:w-auto flex-col-reverse sm:flex-row gap-3 lg:space-x-4">
+                    <a href="{% url 'platform_admin:restaurant_list' %}" class="bg-white text-slate-500 px-6 lg:px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest border border-slate-200 hover:bg-slate-50 transition text-center">Abort</a>
+                    <button type="submit" class="bg-indigo-600 text-white px-6 lg:px-12 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-700 shadow-2xl shadow-indigo-900/40 transition transform active:scale-95">
                         {% if restaurant %}Update Cluster Configuration{% else %}Regiser & Deploy Database{% endif %}
                     </button>
                 </div>

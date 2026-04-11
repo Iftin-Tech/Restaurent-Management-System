@@ -1,36 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="px-6 py-6 max-w-7xl mx-auto">
-    <div class="mb-8">
+<div class="page-shell">
+    <div class="mb-6 lg:mb-8">
         <h1 class="text-3xl font-extrabold text-gray-800">Hi, {{ request.user.first_name|default:request.user.username }}! 👋</h1>
-        <p class="text-gray-500 mt-1 font-medium">Here is your management overview.</p>
+        <p class="text-gray-500 mt-1 font-medium text-sm lg:text-base">Here is your management overview.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-green-500">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
+        <div class="bg-white p-5 lg:p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-green-500">
             <h3 class="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Today's Sales</h3>
-            <p class="text-4xl font-extrabold text-gray-800">${{ today_sales }}</p>
+            <p class="text-3xl lg:text-4xl font-extrabold text-gray-800">${{ today_sales }}</p>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-yellow-400">
+        <div class="bg-white p-5 lg:p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-yellow-400">
             <h3 class="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Pending Payments</h3>
-            <p class="text-4xl font-extrabold text-gray-800">${{ pending_payments }}</p>
+            <p class="text-3xl lg:text-4xl font-extrabold text-gray-800">${{ pending_payments }}</p>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-blue-500 flex flex-col justify-between">
+        <div class="bg-white p-5 lg:p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-blue-500 flex flex-col justify-between">
             <h3 class="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Paid Orders</h3>
-            <p class="text-4xl font-extrabold text-gray-800">{{ paid_count }}</p>
+            <p class="text-3xl lg:text-4xl font-extrabold text-gray-800">{{ paid_count }}</p>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-red-500 flex flex-col justify-between">
+        <div class="bg-white p-5 lg:p-6 rounded-2xl shadow-sm border border-gray-100 border-l-[6px] border-l-red-500 flex flex-col justify-between">
             <h3 class="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Cancelled</h3>
-            <p class="text-4xl font-extrabold text-gray-800">{{ cancelled_count }}</p>
+            <p class="text-3xl lg:text-4xl font-extrabold text-gray-800">{{ cancelled_count }}</p>
         </div>
     </div>
 
-    <div class="mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-8 py-5 border-b border-gray-100 bg-gray-50">
-            <h3 class="text-xl font-bold text-gray-700">Quick Reference</h3>
+    <div class="mt-8 lg:mt-12 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-4 lg:px-8 py-4 lg:py-5 border-b border-gray-100 bg-gray-50">
+            <h3 class="text-lg lg:text-xl font-bold text-gray-700">Quick Reference</h3>
         </div>
-        <div class="p-8">
-            <p class="text-gray-500 font-medium">Use the sidebar navigation to manage users, menu items, orders, payments, and reports for your restaurant.</p>
+        <div class="p-4 lg:p-8">
+            <p class="text-gray-500 font-medium text-sm lg:text-base">Use the sidebar navigation to manage users, menu items, orders, payments, and reports for your restaurant.</p>
         </div>
     </div>
 </div>

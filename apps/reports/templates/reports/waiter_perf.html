@@ -1,8 +1,8 @@
 {% extends 'reports/base_report.html' %}
 {% block report_content %}
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8">
     {% for s in stats %}
-    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
+    <div class="bg-white p-5 lg:p-8 rounded-3xl border border-slate-200 shadow-sm transition hover:shadow-xl hover:-translate-y-1">
         <div class="flex justify-between items-start mb-6">
             <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-2xl uppercase">{{ s.waiter__username.0 }}</div>
             <div class="text-right">

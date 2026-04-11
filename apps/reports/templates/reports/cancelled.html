@@ -1,9 +1,10 @@
 {% extends 'reports/base_report.html' %}
 {% block report_content %}
 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
-        <h3 class="font-black text-slate-800 tracking-tighter text-xl uppercase italic">VOIDED TRANSACTIONS</h3>
+    <div class="px-4 lg:px-8 py-4 lg:py-6 border-b border-slate-100 bg-slate-50/50">
+        <h3 class="font-black text-slate-800 tracking-tighter text-lg lg:text-xl uppercase italic">VOIDED TRANSACTIONS</h3>
     </div>
+    <div class="table-shell">
     <table class="w-full text-left">
         <thead class="bg-slate-50 border-b border-slate-100">
             <tr>
@@ -28,5 +29,6 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 {% endblock %}
